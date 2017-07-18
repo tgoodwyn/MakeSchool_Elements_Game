@@ -17,7 +17,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var gameState: gameState = .inactive
     
-    var turnsTaken = 0
+    
     
     var playerStartingElement: Element!
     var opponentStartingElement: Element!
@@ -27,6 +27,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var opponent = Player(playerName: .AI)
     
     var opponentAvailableTransformableElements: [String] = []
+    var opponentBalancableElements: [String] = []
     
     var playerWood: Element!
     var playerFire: Element!
@@ -43,6 +44,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var opponentActionLabel: SKLabelNode!
     var victoryLabel: SKLabelNode!
     var turnCountLabel: SKLabelNode!
+    
+    var resetHighScoreButton: MSButtonNode!
+    
+    var turnsTaken: Int = 0
+    
+    var finalScore = 0
+    
+    var highScoreTurnsLabel: SKLabelNode!
+    var highScore: Int {
+        get {
+            return UserDefaults.standard.integer(forKey: "highScore")
+        }
+        set(high) {
+            UserDefaults.standard.set(high, forKey: "highScore")
+        }
+    }
     
     var playerTurn: Bool = true
     
@@ -71,12 +88,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var opponentBlueCircle: SKShapeNode!
     
     
+    var resetButton: MSButtonNode!
+    
     var generateButton: MSButtonNode!
     
     
     override func didMove(to view: SKView) {
         
-        
+        highScoreTurnsLabel = childNode(withName: "highScoreTurnsLabel") as! SKLabelNode
+        highScoreTurnsLabel.text = ("\(highScore)")
         
         
         greenCenter = CGPoint(x: 75, y: 500)
@@ -113,8 +133,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         opponent.blackLabel = childNode(withName: "opponentBlackLabel") as! SKLabelNode
         opponent.blueLabel = childNode(withName: "opponentBlueLabel") as! SKLabelNode
         
+        resetButton = childNode(withName: "resetButton") as! MSButtonNode
         
         generateButton = childNode(withName: "generateButton") as! MSButtonNode
+        
+        resetHighScoreButton = childNode(withName: "resetHighScoreButton") as! MSButtonNode
+        
         
         self.gameState = .inactive
         
@@ -125,10 +149,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.playerTurn = false
             
             self.gameState = .active
+            self.victoryLabel.isHidden = true
             
         }
         
+        resetButton.isHidden = true
         
+        resetButton.selectedHandler = {
+            
+            self.opponent.fire.health = 5
+            
+            self.player.wood.health = 0
+            self.player.fire.health = 0
+            self.player.earth.health = 0
+            self.player.metal.health = 0
+            self.player.water.health = 0
+            
+            self.turnsTaken = 0
+            self.resetButton.isHidden = true
+        }
+        
+        
+        resetHighScoreButton.selectedHandler = {
+            self.resetHighScore()
+        }
         
         // circle stuff
         
@@ -187,7 +231,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         opponent.setup()
         player.setup()
         
-        opponent.fire.health = 10
+        opponent.fire.health = 5
         
         
         // randomizeOpponentStartingElement()
@@ -227,27 +271,102 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("randomly selected transformable element is\(selectedElement)")
     }
     
+    func opponentBalance() {
+        
+        let selectedElement = opponentBalancableElements[Int(arc4random_uniform(UInt32(opponentBalancableElements.count)))]
+        
+        if selectedElement == "earth" {
+            player.earth.health -= opponent.wood.health
+        }
+        
+        if selectedElement == "metal" {
+            player.metal.health -= opponent.fire.health
+        }
+        
+        if selectedElement == "water" {
+            player.water.health -= opponent.earth.health
+        }
+        
+        if selectedElement == "wood" {
+            player.wood.health -= opponent.metal.health
+        }
+        
+        if selectedElement == "fire" {
+            player.fire.health -= opponent.water.health
+        }
+        
+    }
+    
     func opponentTurn() {
         
         
-        
-        if opponentAvailableTransformableElements.count > 0 {
-        
-            var whatOpponentDoes = Int(UInt32(arc4random_uniform(2)))
+        if opponentBalancableElements.count > 0 {
             
-            if whatOpponentDoes == 0 {
-                opponentStartingElement.health += 1
-                opponentActionLabel.text = "opponent regenerates"
-            } else if whatOpponentDoes == 1 {
-                opponentTransform()
-                opponentActionLabel.text = "opponent transforms"
-            }
+            opponentBalance()
+            opponentActionLabel.text = "opponent balances"
+            
+        } else if opponentAvailableTransformableElements.count > 0 {
+            
+            opponentTransform()
+            opponentActionLabel.text = "opponent transforms"
+            
         } else {
-            opponentStartingElement.health += 1
-            print("no colors available to transform, opponent regenerates")
+            opponent.fire.health += 1
+            opponentActionLabel.text = "opponent regenerates"
+            
         }
         
         
+        
+        
+    /*
+        if opponentAvailableTransformableElements.count > 0 && opponentBalancableElements.count > 0 {
+            
+            
+                if turnsTaken % 3 == 0 {
+                    opponentStartingElement.health += 1
+                    opponentActionLabel.text = "opponent regenerates"
+                } else if turnsTaken % 3 == 2 {
+                    opponentTransform()
+                    opponentActionLabel.text = "opponent transforms"
+                } else {
+                    opponentBalance()
+                    opponentActionLabel.text = "opponent balances"
+                    
+                }
+        } else if opponentAvailableTransformableElements.count > 0 {
+            
+            if turnsTaken % 2 == 0 {
+                opponentStartingElement.health += 1
+                opponentActionLabel.text = "opponent regenerates"
+            }
+                
+            else  {
+                opponentTransform()
+                opponentActionLabel.text = "opponent transforms"
+            }
+            
+        } else if opponentBalancableElements.count > 0 {
+            
+            if turnsTaken % 2 == 0 {
+                opponentStartingElement.health += 1
+                opponentActionLabel.text = "opponent regenerates"
+            }
+                
+            else  {
+                opponentBalance()
+                opponentActionLabel.text = "opponent transforms"
+            }
+            
+            
+        }
+            
+        else {
+            opponentStartingElement.health += 1
+            opponentActionLabel.text = "no transform available"
+    
+        }
+ */
         
         playerTurn = true
         
@@ -430,8 +549,81 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             opponentTurn()
         }
         
+        
+        if player.wood.health <= 0 {
+            player.wood.health = 0
+            
+            for index in 0..<(opponentBalancableElements.count) {
+                
+                if opponentBalancableElements[index] == "wood" {
+                    opponentBalancableElements.remove(at: index)
+                    break
+                }
+            }
+        }
+        
+        if player.fire.health <= 0 {
+            player.fire.health = 0
+            
+            for index in 0..<(opponentBalancableElements.count) {
+                
+                if opponentBalancableElements[index] == "fire" {
+                    opponentBalancableElements.remove(at: index)
+                    break
+                }
+            }
+        }
+        
+        if player.earth.health <= 0 {
+            player.earth.health = 0
+            
+            for index in 0..<(opponentBalancableElements.count) {
+                
+                if opponentBalancableElements[index] == "earth" {
+                    opponentBalancableElements.remove(at: index)
+                    break
+                }
+            }
+        }
+        
+        if player.metal.health <= 0 {
+            player.metal.health = 0
+            
+            for index in 0..<(opponentBalancableElements.count) {
+                
+                if opponentBalancableElements[index] == "metal" {
+                    opponentBalancableElements.remove(at: index)
+                    break
+                }
+            }
+        }
+        
+        if player.water.health <= 0 {
+            player.water.health = 0
+            
+            for index in 0..<(opponentBalancableElements.count) {
+                
+                if opponentBalancableElements[index] == "water" {
+                    opponentBalancableElements.remove(at: index)
+                    break
+                }
+            }
+        }
+        
+        
+        // OPPONENT ELEMENTAL PROPERTIES CHANGES
+        
+        // how opponent's WOOD changes
+        
         if opponent.wood.health > 0 {
             opponentAvailableTransformableElements.append("wood")
+            
+            if player.earth.health > 0 {
+                
+                opponentBalancableElements.append("earth")
+                
+            }
+            
         } else if opponent.wood.health <= 0 {
             
             opponent.wood.health = 0
@@ -444,59 +636,159 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
             
+            
+            
+            for index in 0..<(opponentBalancableElements.count) {
+                
+                if opponentBalancableElements[index] == "earth" {
+                    opponentBalancableElements.remove(at: index)
+                    break
+                }
+            }
+                
+    
+            
         }
+        
+        
+        // how opponent's FIRE changes
         
         if opponent.fire.health > 0 {
             opponentAvailableTransformableElements.append("fire")
-        } else if opponent.fire.health <= 0 {
-            for index in 0..<(opponentAvailableTransformableElements.count) {
+            
+            if player.metal.health > 0 {
                 
-                opponent.fire.health = 0
+                opponentBalancableElements.append("metal")
+                
+            }
+            
+            
+        } else if opponent.fire.health <= 0 {
+            
+            opponent.fire.health = 0
+            
+            for index in 0..<(opponentAvailableTransformableElements.count) {
                 
                 if opponentAvailableTransformableElements[index] == "fire" {
                     opponentAvailableTransformableElements.remove(at: index)
                     break
                 }
+            
             }
+            
+            for index in 0..<(opponentBalancableElements.count) {
+                
+                if opponentBalancableElements[index] == "metal" {
+                    opponentBalancableElements.remove(at: index)
+                    break
+                }
+            }
+            
         }
+        
+        
+        
+        // how opponent's EARTH changes
         
         if opponent.earth.health > 0 {
             opponentAvailableTransformableElements.append("earth")
+            
+            if player.water.health > 0 {
+                
+                opponentBalancableElements.append("water")
+                
+            }
+            
         } else if opponent.earth.health <= 0 {
+            
+            opponent.earth.health = 0
+            
             for index in 0..<(opponentAvailableTransformableElements.count) {
                 
-                opponent.earth.health = 0
-                
+            
                 if opponentAvailableTransformableElements[index] == "earth" {
                     opponentAvailableTransformableElements.remove(at: index)
+                    break
+                }
+                
+                
+            }
+            
+            for index in 0..<(opponentBalancableElements.count) {
+                
+                if opponentBalancableElements[index] == "water" {
+                    opponentBalancableElements.remove(at: index)
                     break
                 }
             }
         }
         
+        
+        
+        // how opponent's METAL changes
+        
         if opponent.metal.health > 0 {
             opponentAvailableTransformableElements.append("metal")
-        } else if opponent.metal.health <= 0 {
-            for index in 0..<(opponentAvailableTransformableElements.count) {
+            
+            if player.wood.health > 0 {
+            
+            opponentBalancableElements.append("wood")
                 
-                opponent.metal.health = 0
+            }
+            
+        } else if opponent.metal.health <= 0 {
+            
+            opponent.metal.health = 0
+            
+            for index in 0..<(opponentAvailableTransformableElements.count) {
                 
                 if opponentAvailableTransformableElements[index] == "metal" {
                     opponentAvailableTransformableElements.remove(at: index)
                     break
                 }
+                
+            }
+            
+            for index in 0..<(opponentBalancableElements.count) {
+                
+                if opponentBalancableElements[index] == "wood" {
+                    opponentBalancableElements.remove(at: index)
+                    break
+                }
             }
         }
 
+        
+        
+        // how opponent's WATER changes
+        
         if opponent.water.health > 0 {
             opponentAvailableTransformableElements.append("water")
+            
+            if player.wood.health > 0 {
+                
+                opponentBalancableElements.append("fire")
+                
+            }
+            
+            
         } else if opponent.water.health <= 0 {
+            
+            opponent.water.health = 0
+            
             for index in 0..<(opponentAvailableTransformableElements.count) {
                 
-                opponent.water.health = 0
                 
                 if opponentAvailableTransformableElements[index] == "water" {
                     opponentAvailableTransformableElements.remove(at: index)
+                    break
+                }
+            }
+            
+            for index in 0..<(opponentBalancableElements.count) {
+                
+                if opponentBalancableElements[index] == "fire" {
+                    opponentBalancableElements.remove(at: index)
                     break
                 }
             }
@@ -508,18 +800,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 
                 
+                self.resetButton.isHidden = false
+                
+                
+                
                 self.victoryLabel.isHidden = false
                 self.gameState = .inactive
+                
+                finalScore = turnsTaken
+                
+                if finalScore < highScore || highScore == 0 {
+                    highScore = finalScore
+                    print("high score set")
+    
+                }
+                
+                self.highScoreTurnsLabel.text = "\(self.highScore)"
+                
+                
+              
+                
+                
             }
             
         }
         
         turnCountLabel.text = String(turnsTaken)
+        
 
         
     }
     
-
+    
     
    
     
@@ -542,7 +854,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     
-    
+    func resetHighScore() {
+        highScore = 0
+        self.highScoreTurnsLabel.text = "\(self.highScore)"
+    }
     
     
     
