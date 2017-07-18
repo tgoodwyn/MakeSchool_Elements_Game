@@ -11,7 +11,13 @@ import Foundation
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
+    enum gameState {
+        case active, inactive
+    }
     
+    var gameState: gameState = .inactive
+    
+    var turnsTaken = 0
     
     var playerStartingElement: Element!
     var opponentStartingElement: Element!
@@ -34,6 +40,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var opponentMetal: Element!
     var opponentWater: Element!
        
+    var opponentActionLabel: SKLabelNode!
+    var victoryLabel: SKLabelNode!
+    var turnCountLabel: SKLabelNode!
     
     var playerTurn: Bool = true
     
@@ -45,7 +54,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var yellowCircle: SKShapeNode!
     var blackCircle: SKShapeNode!
     var blueCircle: SKShapeNode!
-    var greenCircle2: SKShapeNode!
+    
     
     var greenCenter: CGPoint!
     var redCenter: CGPoint!
@@ -107,11 +116,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         generateButton = childNode(withName: "generateButton") as! MSButtonNode
         
+        self.gameState = .inactive
         
         generateButton.selectedHandler = {
             
             self.playerStartingElement.health += 1
+            self.turnsTaken += 1
             self.playerTurn = false
+            
+            self.gameState = .active
             
         }
         
@@ -124,7 +137,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         makeCircle(location: yellowCenter, color: .orange, name: "yellowCircle")
         makeCircle(location: blackCenter, color: .black, name: "blackCircle")
         makeCircle(location: blueCenter, color: .blue, name: "blueCircle")
-        makeCircle(location: greenCenter2, color: .green, name: "greenCircle2")
+        
         
         makeCircle(location: CGPoint(x: 250, y: 500), color: .orange, name: "opponentYellowCircle")
         makeCircle(location: CGPoint(x: 250, y: 425), color: .black, name: "opponentBlackCircle")
@@ -144,8 +157,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         yellowCircle = childNode(withName: "yellowCircle") as! SKShapeNode
         blackCircle = childNode(withName: "blackCircle") as! SKShapeNode
         blueCircle = childNode(withName: "blueCircle") as! SKShapeNode
-        greenCircle2 = childNode(withName: "greenCircle2") as! SKShapeNode
+       
         
+        opponentActionLabel = childNode(withName: "opponentAction") as! SKLabelNode
+        victoryLabel = childNode(withName: "victoryLabel") as! SKLabelNode
+        turnCountLabel = childNode(withName: "turnCountLabel") as! SKLabelNode
+        
+        
+        
+        self.victoryLabel.isHidden = true
         
         /*
         playerWood = player.wood
@@ -163,8 +183,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         playerStartingElement = player.wood
         opponentStartingElement = opponent.fire
+        
         opponent.setup()
         player.setup()
+        
+        opponent.fire.health = 10
+        
+        
         // randomizeOpponentStartingElement()
        
     }
@@ -212,10 +237,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             if whatOpponentDoes == 0 {
                 opponentStartingElement.health += 1
-                print("opponent regenerates")
+                opponentActionLabel.text = "opponent regenerates"
             } else if whatOpponentDoes == 1 {
                 opponentTransform()
-                print("opponent transforms")
+                opponentActionLabel.text = "opponent transforms"
             }
         } else {
             opponentStartingElement.health += 1
@@ -238,6 +263,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             && (contact.bodyA.node?.name == "redCircle" || contact.bodyB.node?.name == "redCircle") {
             player.fire.health += player.wood.health
             player.wood.health = 0
+            
+            turnsTaken += 1
             playerTurn = false
             print("human player's fire health is\(player.fire.health)")
         }
@@ -245,6 +272,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             && (contact.bodyA.node?.name == "yellowCircle" || contact.bodyB.node?.name == "yellowCircle") {
             player.earth.health += player.fire.health
             player.fire.health = 0
+            
+            turnsTaken += 1
             playerTurn = false
             print("human player's earth health is\(player.earth.health)")
         }
@@ -252,18 +281,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             && (contact.bodyA.node?.name == "blackCircle" || contact.bodyB.node?.name == "blackCircle") {
             player.metal.health += player.earth.health
             player.earth.health = 0
+            
+            turnsTaken += 1
             playerTurn = false
         }
         if (contact.bodyA.node?.name == "blackCircle" || contact.bodyB.node?.name == "blackCircle")
             && (contact.bodyA.node?.name == "blueCircle" || contact.bodyB.node?.name == "blueCircle") {
             player.water.health += player.metal.health
             player.metal.health = 0
+            
+            turnsTaken += 1
             playerTurn = false
         }
         if (contact.bodyA.node?.name == "blueCircle" || contact.bodyB.node?.name == "blueCircle")
             && (contact.bodyA.node?.name == "greenCircle" || contact.bodyB.node?.name == "greenCircle") {
             player.wood.health += player.water.health
             player.water.health = 0
+            
+            turnsTaken += 1
             playerTurn = false
         }
         
@@ -272,29 +307,41 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (contact.bodyA.node?.name == "greenCircle" || contact.bodyB.node?.name == "greenCircle")
             && (contact.bodyA.node?.name == "opponentYellowCircle" || contact.bodyB.node?.name == "opponentYellowCircle") {
             opponent.earth.health -= player.wood.health
+            
+            turnsTaken += 1
             print("opponent's earth health is \(opponent.earth.health)")
             playerTurn = false
+            
+            turnsTaken += 1
         }
         if (contact.bodyA.node?.name == "yellowCircle" || contact.bodyB.node?.name == "yellowCircle")
             && (contact.bodyA.node?.name == "opponentBlueCircle" || contact.bodyB.node?.name == "opponentBlueCircle") {
             opponent.water.health -= player.earth.health
             playerTurn = false
+            
+            turnsTaken += 1
         }
         if (contact.bodyA.node?.name == "blueCircle" || contact.bodyB.node?.name == "blueCircle")
             && (contact.bodyA.node?.name == "opponentRedCircle" || contact.bodyB.node?.name == "opponentRedCircle") {
             opponent.fire.health -= player.water.health
             print("opponent's fire health is \(opponent.fire.health)")
             playerTurn = false
+            
+            turnsTaken += 1
         }
         if (contact.bodyA.node?.name == "redCircle" || contact.bodyB.node?.name == "redCircle")
             && (contact.bodyA.node?.name == "opponentBlackCircle" || contact.bodyB.node?.name == "opponentBlackCircle") {
             opponent.metal.health -= player.fire.health
             playerTurn = false
+            
+            turnsTaken += 1
         }
         if (contact.bodyA.node?.name == "blackCircle" || contact.bodyB.node?.name == "blackCircle")
             && (contact.bodyA.node?.name == "opponentGreenCircle" || contact.bodyB.node?.name == "opponentGreenCircle") {
             opponent.wood.health -= player.metal.health
             playerTurn = false
+            
+            turnsTaken += 1
         }
     }
 
@@ -387,6 +434,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             opponentAvailableTransformableElements.append("wood")
         } else if opponent.wood.health <= 0 {
             
+            opponent.wood.health = 0
+            
             for index in 0..<(opponentAvailableTransformableElements.count) {
                 
                 if opponentAvailableTransformableElements[index] == "wood" {
@@ -402,21 +451,71 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if opponent.fire.health <= 0 {
             for index in 0..<(opponentAvailableTransformableElements.count) {
                 
+                opponent.fire.health = 0
+                
                 if opponentAvailableTransformableElements[index] == "fire" {
                     opponentAvailableTransformableElements.remove(at: index)
                     break
                 }
             }
         }
+        
         if opponent.earth.health > 0 {
             opponentAvailableTransformableElements.append("earth")
+        } else if opponent.earth.health <= 0 {
+            for index in 0..<(opponentAvailableTransformableElements.count) {
+                
+                opponent.earth.health = 0
+                
+                if opponentAvailableTransformableElements[index] == "earth" {
+                    opponentAvailableTransformableElements.remove(at: index)
+                    break
+                }
+            }
         }
+        
         if opponent.metal.health > 0 {
             opponentAvailableTransformableElements.append("metal")
+        } else if opponent.metal.health <= 0 {
+            for index in 0..<(opponentAvailableTransformableElements.count) {
+                
+                opponent.metal.health = 0
+                
+                if opponentAvailableTransformableElements[index] == "metal" {
+                    opponentAvailableTransformableElements.remove(at: index)
+                    break
+                }
+            }
         }
+
         if opponent.water.health > 0 {
             opponentAvailableTransformableElements.append("water")
+        } else if opponent.water.health <= 0 {
+            for index in 0..<(opponentAvailableTransformableElements.count) {
+                
+                opponent.water.health = 0
+                
+                if opponentAvailableTransformableElements[index] == "water" {
+                    opponentAvailableTransformableElements.remove(at: index)
+                    break
+                }
+            }
         }
+        
+        
+        if self.gameState == .active {
+            if opponent.wood.health == 0 && opponent.fire.health == 0 && opponent.earth.health == 0 && opponent.metal.health == 0 && opponent.water.health == 0 {
+                
+                
+                
+                self.victoryLabel.isHidden = false
+                self.gameState = .inactive
+            }
+            
+        }
+        
+        turnCountLabel.text = String(turnsTaken)
+
         
     }
     
