@@ -16,6 +16,11 @@ class Player {
     var metal: Element
     var water: Element
     
+    
+    var opponentAvailableTransformableElements: [String] = []
+    var opponentBalancableElements: [String] = []
+    
+    
     init(playerName: Element.playerName) {
         wood = Element(type: .wood, belongsTo: playerName)
         fire = Element(type: .fire, belongsTo: playerName)
