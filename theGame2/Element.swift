@@ -19,11 +19,12 @@ class Element {
     }
     
     var belongsTo: playerName
-    weak var label: SKLabelNode?
     
+    
+    var color: UIColor!
     
     weak var delegate: Player!
-    
+    weak var label: SKLabelNode?
     
     
     
@@ -48,18 +49,23 @@ class Element {
         switch type {
         case .wood:
             label = delegate.greenLabel
+            color = .green
             break
         case .fire:
             label = delegate.redLabel
+            color = .red
             break
         case .earth:
             label = delegate.yellowLabel
+            color = .brown
             break
         case.metal:
             label = delegate.blackLabel
+            color = .black
             break
         case.water:
             label = delegate.blueLabel
+            color = .blue
             break
         }
 

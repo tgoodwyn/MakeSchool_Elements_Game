@@ -39,6 +39,12 @@ class Player {
         }
     }
     
+    
+    var primaryElement: SKSpriteNode!
+    
+    
+    
+    
     var greenLabel: SKLabelNode!
     var redLabel: SKLabelNode!
     var yellowLabel: SKLabelNode!
