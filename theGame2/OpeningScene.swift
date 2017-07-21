@@ -12,6 +12,7 @@ import Foundation
 class OpeningScene: SKScene, SKPhysicsContactDelegate {
     
 
+
     var objectGrabbed: SKShapeNode!
     var objectMovable:Bool = true
     
@@ -59,15 +60,27 @@ class OpeningScene: SKScene, SKPhysicsContactDelegate {
         circle.physicsBody?.collisionBitMask = 0
         
         self.addChild(circle)
-        print("circle hath been maded")
     }
 
     override func didMove(to view: SKView) {
-        woodCenter = CGPoint(x: size.width / 2, y: size.height / 2  + 200)
-        fireCenter = CGPoint(x: woodCenter.x + 200 * sin(54 * .pi / 180), y: woodCenter.y - 200 * cos(54 * .pi / 180))
-        earthCenter = CGPoint(x: fireCenter.x - 200 * cos(72 * .pi / 180), y: fireCenter.y - 200 * sin(72 * .pi / 180))
-        metalCenter = CGPoint(x: earthCenter.x - 200, y: earthCenter.y)
-        waterCenter = CGPoint(x: metalCenter.x - 200 * sin(18 * .pi / 180), y: metalCenter.y + 200 * cos(18 * .pi / 180))
+        
+        let distance1: CGFloat = 150
+        let distance2: CGFloat = 90
+        
+        woodCenter = CGPoint(x: size.width / 2, y: size.height * 2 / 3  + distance1 - 15)
+        fireCenter = CGPoint(x: woodCenter.x + distance1 * sin(54 * .pi / 180), y: woodCenter.y - distance1 * cos(54 * .pi / 180))
+        earthCenter = CGPoint(x: fireCenter.x - distance1 * cos(72 * .pi / 180), y: fireCenter.y - distance1 * sin(72 * .pi / 180))
+        metalCenter = CGPoint(x: earthCenter.x - distance1, y: earthCenter.y)
+        waterCenter = CGPoint(x: metalCenter.x - distance1 * sin(18 * .pi / 180), y: metalCenter.y + distance1 * cos(18 * .pi / 180))
+        
+        
+        smallTop = CGPoint(x: size.width / 2, y: size.height * 1 / 3 + 15)
+        smallSideRight = CGPoint(x: smallTop.x + distance2 * sin(54 * .pi / 180), y: smallTop.y - distance2 * cos(54 * .pi / 180))
+        smallBottomRight = CGPoint(x: smallSideRight.x - distance2 * cos(72 * .pi / 180), y: smallSideRight.y - distance2 * sin(72 * .pi / 180))
+        smallBottomLeft = CGPoint(x: smallBottomRight.x - distance2, y: smallBottomRight.y)
+        smallSideLeft = CGPoint(x: smallBottomLeft.x - distance2 * sin(18 * .pi / 180), y: smallBottomLeft.y + distance2 * cos(18 * .pi / 180))
+        
+        
         
         makeCircle(location: woodCenter, color: .green, name: "wood")
         makeCircle(location: fireCenter, color: .red, name: "fire")
@@ -75,6 +88,17 @@ class OpeningScene: SKScene, SKPhysicsContactDelegate {
         makeCircle(location: metalCenter, color: .black, name: "metal")
         makeCircle(location: waterCenter, color: .blue, name: "water")
 
+        makeCircle(location: smallTop, color: .green, name: "woodSmall")
+        makeCircle(location: smallSideRight, color: .red, name: "fireSmall")
+        makeCircle(location: smallBottomRight, color: .brown, name: "earthSmall")
+        makeCircle(location: smallBottomLeft, color: .black, name: "metalSmall")
+        makeCircle(location: smallSideLeft, color: .blue, name: "waterSmall")
+        
+        woodNode = childNode(withName: "wood") as! SKShapeNode
+        fireNode = childNode(withName: "fire") as! SKShapeNode
+        earthNode = childNode(withName: "earth") as! SKShapeNode
+        metalNode = childNode(withName: "metal") as! SKShapeNode
+        waterNode = childNode(withName: "water") as! SKShapeNode
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -85,6 +109,50 @@ class OpeningScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         
         objectMovable = false
+        
+        var element: SKNode?
+        if contact.bodyA.node?.name == "wood" || contact.bodyA.node?.name == "fire" || contact.bodyA.node?.name == "earth" || contact.bodyA.node?.name == "metal" || contact.bodyA.node?.name == "water" {
+            element = contact.bodyA.node!
+        } else if contact.bodyB.node?.name == "wood" || contact.bodyB.node?.name == "fire" || contact.bodyB.node?.name == "earth" || contact.bodyB.node?.name == "metal" || contact.bodyB.node?.name == "water" {
+            element = contact.bodyB.node!
+        }
+        var selectionSquare: SKNode?
+        if contact.bodyA.node?.name == "selectionSquare" {
+            selectionSquare = contact.bodyA.node!
+        } else if contact.bodyB.node?.name == "selectionSquare" {
+            selectionSquare = contact.bodyB.node!
+        }
+        
+        var startingType: Element.element!
+        
+        if selectionSquare != nil && element != nil {
+            switch((element?.name)!) {
+            case "wood":
+                startingType = .wood
+                break
+            case "fire":
+                startingType = .fire
+                break
+            case "earth":
+                startingType = .earth
+                break
+            case "metal":
+                startingType = .metal
+                break
+            case "water":
+                startingType = .water
+                break
+            default:
+                print("unsupported element")
+                return
+            }
+            let game = GUIScene(fileNamed: "GUIScene")
+            game?.scaleMode = .aspectFill
+            game?.player.startingType = startingType
+            view?.presentScene(game)
+        }
+        
+              
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -92,7 +160,7 @@ class OpeningScene: SKScene, SKPhysicsContactDelegate {
         let touch = touches.first!
         let location = touch.location(in: self)
         let nodeAtPoint = atPoint(location)
-        if nodeAtPoint.name == "greenCircle" || nodeAtPoint.name == "redCircle" || nodeAtPoint.name == "yellowCircle" || nodeAtPoint.name == "blackCircle" || nodeAtPoint.name == "blueCircle" {
+        if nodeAtPoint.name == "wood" || nodeAtPoint.name == "fire" || nodeAtPoint.name == "earth" || nodeAtPoint.name == "metal" || nodeAtPoint.name == "water" {
             objectGrabbed = atPoint(location) as! SKShapeNode
         } else {
             objectGrabbed = nil
@@ -115,6 +183,14 @@ class OpeningScene: SKScene, SKPhysicsContactDelegate {
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
       
+        
+        woodNode.position = woodCenter
+        fireNode.position = fireCenter
+        earthNode.position = earthCenter
+        metalNode.position = metalCenter
+        waterNode.position = waterCenter
+        
+        
     }
 
 

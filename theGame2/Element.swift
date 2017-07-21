@@ -8,7 +8,7 @@
 
 import SpriteKit
 
-class Element {
+class Element: SKSpriteNode {
     
     enum element {
         case fire, earth, metal, water, wood
@@ -18,13 +18,22 @@ class Element {
         case human, AI
     }
     
-    var belongsTo: playerName
     
     
-    var color: UIColor!
+    static let colors: [element : UIColor] = [.fire : UIColor.red, .earth: UIColor.brown, .metal: UIColor.black, .water: UIColor.blue, .wood: UIColor.green]
+    static let strengthens: [element : element] = [.fire : .earth, .earth: .metal, .metal: .water, .water: .wood, .wood: .fire]
+    static let damages: [element: element] =
+        [.fire: .metal, .metal: .wood, .wood: .earth, .earth: .water, .water: .fire]
+    static let damagedBy: [element: element] = [.fire: .water, .water: .earth, .earth: .wood, .wood: .metal, .metal: .fire]
+    
+    
+    var belongsTo: playerName!
     
     weak var delegate: Player!
     weak var label: SKLabelNode?
+    
+    
+    var startingPosition: CGPoint!
     
     
     
@@ -36,7 +45,7 @@ class Element {
         }
     }
     
-    var type: element {
+    var type: element! {
         didSet {
             reset()
         }
@@ -44,6 +53,9 @@ class Element {
     
     func reset() {
         guard let delegate = delegate else {
+            return
+        }
+        guard let type = type else {
             return
         }
         switch type {
@@ -72,19 +84,10 @@ class Element {
     }
     
     
-    init(type: element, belongsTo: playerName) {
-        self.belongsTo = belongsTo
-        self.type = type
-        reset()
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
-    
-
-    
-    convenience init() {
-        self.init(type: .wood, belongsTo: .human)
-    }
-    
-    
     
     
     
