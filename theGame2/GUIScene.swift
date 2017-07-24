@@ -10,10 +10,12 @@ import SpriteKit
 import Foundation
 
 class GUIScene: SKScene, SKPhysicsContactDelegate {
+    
     enum gameState {
         case active, inactive
     }
     let black = UIColor(colorLiteralRed: 0, green: 0, blue: 0, alpha: 1)
+    
     var gameState: gameState = .inactive
  
     
@@ -24,7 +26,11 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
     var defeatLabel: SKLabelNode!
     var turnCountLabel: SKLabelNode!
     var resetHighScoreButton: MSButtonNode!
-    var turnsTaken: Int = 0
+    var turnsTaken: Int = 0 {
+        didSet {
+            turnCountLabel.text = String(turnsTaken)
+        }
+    }
     var finalScore = 0
     var highScoreTurnsLabel: SKLabelNode!
     var highScore: Int {
@@ -45,7 +51,40 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         // set game state to inactive
         self.gameState = .inactive
-      
+        
+        // opponentActionLabel = childNode(withName: "opponentAction") as! SKLabelNode
+        victoryLabel = childNode(withName: "victoryLabel") as! SKLabelNode
+        defeatLabel = childNode(withName: "defeatLabel") as! SKLabelNode
+        turnCountLabel = childNode(withName: "turnCountLabel") as! SKLabelNode
+        resetButton = childNode(withName: "resetButton") as! MSButtonNode
+        
+        self.victoryLabel.isHidden = true
+        self.defeatLabel.isHidden = true
+        self.resetButton.isHidden = true
+        
+        generateButton = childNode(withName: "generateButton") as! MSButtonNode
+        
+        resetButton.selectedHandler = {
+            
+            self.opponent.fire.health = 0
+            self.opponent.wood.health = 0
+            self.opponent.earth.health = 0
+            self.opponent.metal.health = 0
+            self.opponent.water.health = 0
+            
+            
+            self.player.wood.health = 0
+            self.player.fire.health = 0
+            self.player.earth.health = 0
+            self.player.metal.health = 0
+            self.player.water.health = 0
+            
+            self.turnsTaken = 0
+            self.resetButton.isHidden = true
+            
+            self.defeatLabel.isHidden = true
+            self.victoryLabel.isHidden = true
+        }
         
         var prevType: Element.element?
         for number in 0...4 {
@@ -58,7 +97,6 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
             }
             nextElement.color = Element.colors[nextElement.type]!
             nextElement.startingPosition = nextElement.position
-            nextElement.label = nextElement.childNode(withName: "element\(number)Label") as? SKLabelNode
             nextElement.health = 0
             player.setElement(nextElement.type, to: nextElement)
             prevType = nextElement.type
@@ -72,6 +110,7 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
                 nextElement.type = Element.strengthens[prevType!]!
             } else {
                 nextElement.type = Element.damagedBy[player.startingType]!
+                opponent.startingType = nextElement.type
             }
             nextElement.color = Element.colors[nextElement.type]!
             nextElement.startingPosition = nextElement.position
@@ -89,12 +128,10 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
             }
             nextElement.color = Element.colors[nextElement.type]!
             nextElement.startingPosition = nextElement.position
-            nextElement.label = nextElement.childNode(withName: "opponent\(number)Label") as? SKLabelNode
             nextElement.health = 0
             opponent.setElement(nextElement.type, to: nextElement)
             prevType = nextElement.type
         }
-        
       
         
         //and so on
@@ -102,7 +139,14 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         // initial player set up
         opponent.setup()
         player.setup()
-        opponent.fire.health = 5
+        generateButton.selectedHandler = {
+            self.gameState = .active
+            self.player.element(self.player.startingType).health += 1
+            self.turnsTaken += 1
+            self.playerTurn = false
+            
+        }
+        
     }
     
     func opponentTransform(_ elementsToTransform: [Element]) {
@@ -134,21 +178,30 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         }
         // Determining action opponent takes
         if balanceable.count > 0 {
+            if turnsTaken % 3 == 0 {
+                opponentBalance(balanceable)
+                // opponentActionLabel.text = "opponent regenerates"
+            } else {
+                opponent.element(opponent.startingType).health += 1
+                // opponentActionLabel.text = "opponent transforms"
+            }
+
+            
             // taking action
-            opponentBalance(balanceable)
-            opponentActionLabel.text = "opponent balances"
+            
+            // opponentActionLabel.text = "opponent balances"
         } else if transformable.count > 0 {
             
             if turnsTaken % 3 == 0 || turnsTaken % 3 == 1 {
-                opponent.startingType.health += 1
-                opponentActionLabel.text = "opponent regenerates"
+                opponent.element(opponent.startingType).health += 1
+                // opponentActionLabel.text = "opponent regenerates"
             } else {
                 opponentTransform(transformable)
-                opponentActionLabel.text = "opponent transforms"
+                // opponentActionLabel.text = "opponent transforms"
             }
         } else {
-            opponent.startingType.health += 1
-            opponentActionLabel.text = "opponent regenerates"
+            opponent.element(opponent.startingType).health += 1
+            // opponentActionLabel.text = "opponent regenerates"
         }
         playerTurn = true
     }
@@ -170,11 +223,7 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
                 self.resetButton.isHidden = false
                 self.victoryLabel.isHidden = false
                 self.gameState = .inactive
-                finalScore = turnsTaken
-                if finalScore < highScore || highScore == 0 {
-                    highScore = finalScore
-                }
-                self.highScoreTurnsLabel.text = "\(self.highScore)"
+                print("game over")
             }
             if player.wood.health == 0 && player.fire.health == 0 && player.earth.health == 0 && player.metal.health == 0 && player.water.health == 0 {
                 self.resetButton.isHidden = false
@@ -238,20 +287,24 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         }
          // supporting interactions
         if playerElement1 != nil && playerElement2 != nil {
-            print("support")
             if Element.strengthens[playerElement1!.type] == playerElement2!.type {
                 playerElement2!.health += playerElement1!.health
                 playerElement1!.health = 0
+                turnsTaken += 1
+                playerTurn = false
             } else if Element.strengthens[playerElement2!.type] == playerElement1!.type {
                 playerElement1!.health += playerElement2!.health
                 playerElement2!.health = 0
+                turnsTaken += 1
+                playerTurn = false
             }
         }
         // damaging interactions
         if playerElement1 != nil && opponentElement1 != nil {
-            print("damage")
-            if Element.damages[opponentElement1!.type] == playerElement1!.type {
+            if Element.damagedBy[opponentElement1!.type] == playerElement1!.type {
                 opponentElement1!.health -= playerElement1!.health
+                turnsTaken += 1
+                playerTurn = false
             }
         }
     }

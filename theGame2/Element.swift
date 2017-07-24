@@ -30,7 +30,6 @@ class Element: SKSpriteNode {
     var belongsTo: playerName!
     
     weak var delegate: Player!
-    weak var label: SKLabelNode?
     
     
     var startingPosition: CGPoint!
@@ -39,9 +38,7 @@ class Element: SKSpriteNode {
     
     var health = 0 {
         didSet {
-            if let label = label {
-                label.text = String(health)
-            }
+            (childNode(withName: "label") as! SKLabelNode).text = String(health)
         }
     }
     
@@ -60,23 +57,18 @@ class Element: SKSpriteNode {
         }
         switch type {
         case .wood:
-            label = delegate.greenLabel
             color = .green
             break
         case .fire:
-            label = delegate.redLabel
             color = .red
             break
         case .earth:
-            label = delegate.yellowLabel
             color = .brown
             break
         case.metal:
-            label = delegate.blackLabel
             color = .black
             break
         case.water:
-            label = delegate.blueLabel
             color = .blue
             break
         }

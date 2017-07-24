@@ -24,7 +24,6 @@ class Player {
     {
         for (_, element) in [wood, fire, earth, metal, water].enumerated() {
             element?.delegate = self
-            element?.reset()
         }
     }
     
@@ -65,15 +64,7 @@ class Player {
     
     
     var startingType: Element.element!
-    
-    
-    
-    
-    var greenLabel: SKLabelNode!
-    var redLabel: SKLabelNode!
-    var yellowLabel: SKLabelNode!
-    var blackLabel: SKLabelNode!
-    var blueLabel: SKLabelNode!
+
     
 
     
