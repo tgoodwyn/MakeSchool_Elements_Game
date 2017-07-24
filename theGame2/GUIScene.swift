@@ -46,11 +46,69 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
     var playerTurn: Bool = true
     var objectGrabbed: Element!
     var objectMovable:Bool = true
+    
+    var playerElement1: Element!
+    var playerElement2: Element!
+    var playerElement3: Element!
+    var playerElement4: Element!
+    var playerElement5: Element!
+    
+    var opponentElement1: Element!
+    var opponentElement2: Element!
+    var opponentElement3: Element!
+    var opponentElement4: Element!
+    var opponentElement5: Element!
   
     
     override func didMove(to view: SKView) {
         // set game state to inactive
         self.gameState = .inactive
+        
+        // element node connections and locations
+        playerElement1 = childNode(withName: "element0") as! Element
+        playerElement2 = childNode(withName: "element1") as! Element
+        playerElement3 = childNode(withName: "element2") as! Element
+        playerElement4 = childNode(withName: "element3") as! Element
+        playerElement5 = childNode(withName: "element4") as! Element
+        
+        opponentElement1 = childNode(withName: "opponentDamagedBy0") as! Element
+        opponentElement2 = childNode(withName: "opponentDamagedBy1") as! Element
+        opponentElement3 = childNode(withName: "opponentDamagedBy2") as! Element
+        opponentElement4 = childNode(withName: "opponentDamagedBy3") as! Element
+        opponentElement5 = childNode(withName: "opponentDamagedBy4") as! Element
+        
+        playerElement1.position =
+            CGPoint(x: size.width / 4,
+                    y: size.height / 2  + distance)
+        playerElement2.position =
+            CGPoint(x: playerElement1.position.x + distance * sin(54 * .pi / 180),
+                    y: playerElement1.position.y - distance * cos(54 * .pi / 180))
+        playerElement3.position =
+            CGPoint(x: playerElement2.position.x - distance * cos(72 * .pi / 180),
+                    y: playerElement2.position.y - distance * sin(72 * .pi / 180))
+        playerElement4.position =
+            CGPoint(x: playerElement3.position.x - distance,
+                    y: playerElement3.position.y)
+        playerElement5.position =
+            CGPoint(x: playerElement4.position.x - distance * sin(18 * .pi / 180),
+                    y: playerElement4.position.y + distance * cos(18 * .pi / 180))
+        
+        opponentElement1.position =
+            CGPoint(x: size.width * 3 / 4,
+                    y: size.height / 2 + distance)
+        opponentElement2.position =
+            CGPoint(x: opponentElement1.position.x + distance * sin(54 * .pi / 180),
+                    y: opponentElement1.position.y - distance * cos(54 * .pi / 180))
+        opponentElement3.position =
+            CGPoint(x: opponentElement2.position.x - distance * cos(72 * .pi / 180),
+                    y: opponentElement2.position.y - distance * sin(72 * .pi / 180))
+        opponentElement4.position =
+            CGPoint(x: opponentElement3.position.x - distance,
+                    y: opponentElement3.position.y)
+        opponentElement5.position =
+            CGPoint(x: opponentElement4.position.x - distance * sin(18 * .pi / 180),
+                    y: opponentElement4.position.y + distance * cos(18 * .pi / 180))
+        
         
         // opponentActionLabel = childNode(withName: "opponentAction") as! SKLabelNode
         victoryLabel = childNode(withName: "victoryLabel") as! SKLabelNode
