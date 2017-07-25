@@ -77,6 +77,8 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         opponentElement4 = childNode(withName: "opponentDamagedBy3") as! Element
         opponentElement5 = childNode(withName: "opponentDamagedBy4") as! Element
         
+        let distance: CGFloat = 200
+        
         playerElement1.position =
             CGPoint(x: size.width / 4,
                     y: size.height / 2  + distance)
