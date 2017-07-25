@@ -165,20 +165,6 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
  
         prevType = nil
         for number in 0...4 {
-            let nextElement = childNode(withName: "opponentDamages\(number)") as! Element
-            if prevType != nil {
-                nextElement.type = Element.strengthens[prevType!]!
-            } else {
-                nextElement.type = Element.damagedBy[player.startingType]!
-                opponent.startingType = nextElement.type
-            }
-            nextElement.color = Element.colors[nextElement.type]!
-            nextElement.startingPosition = nextElement.position
-            prevType = nextElement.type
-        }
-        
-        prevType = nil
-        for number in 0...4 {
             let nextElement = childNode(withName: "opponentDamagedBy\(number)") as! Element
             nextElement.belongsTo = .AI
             if prevType != nil {
