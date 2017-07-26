@@ -63,7 +63,7 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
     var nodeToHide2: SKSpriteNode!
     var nodeToHide3: SKSpriteNode!
     
-    
+    var referenceButton: MSButtonNode!
     
     override func didMove(to view: SKView) {
         // set game state to inactive
@@ -86,7 +86,24 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         nodeToHide2 = childNode(withName: "nodeToHide2") as! SKSpriteNode
         nodeToHide3 = childNode(withName: "nodeToHide3") as! SKSpriteNode
         
+        referenceButton = childNode(withName: "referenceButton") as! MSButtonNode
         
+        referenceButton.selectedHandler = {
+            
+            SKTransition.flipVertical(withDuration: 0)
+            
+            if let view = self.view as! SKView? {
+                // Load the SKScene from 'GameScene.sks'
+                if let scene = SKScene(fileNamed: "ReferenceScene") {
+                    // Set the scale mode to scale to fit the window
+                    scene.scaleMode = .aspectFill
+                    
+                    // Present the scene
+                    view.presentScene(scene)
+                }
+            
+            
+        }
         let distance: CGFloat = 200
         
         playerElement1.position =
