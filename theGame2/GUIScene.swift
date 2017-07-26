@@ -59,23 +59,33 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
     var opponentElement4: Element!
     var opponentElement5: Element!
   
+    var nodeToHide1: SKSpriteNode!
+    var nodeToHide2: SKSpriteNode!
+    var nodeToHide3: SKSpriteNode!
+    
+    
     
     override func didMove(to view: SKView) {
         // set game state to inactive
         self.gameState = .inactive
         
         // element node connections and locations
-        playerElement1 = childNode(withName: "element0") as! Element
-        playerElement2 = childNode(withName: "element1") as! Element
-        playerElement3 = childNode(withName: "element2") as! Element
-        playerElement4 = childNode(withName: "element3") as! Element
-        playerElement5 = childNode(withName: "element4") as! Element
+        playerElement1 = childNode(withName: "playerElement1") as! Element
+        playerElement2 = childNode(withName: "playerElement2") as! Element
+        playerElement3 = childNode(withName: "playerElement3") as! Element
+        playerElement4 = childNode(withName: "playerElement4") as! Element
+        playerElement5 = childNode(withName: "playerElement5") as! Element
         
-        opponentElement1 = childNode(withName: "opponentDamagedBy0") as! Element
-        opponentElement2 = childNode(withName: "opponentDamagedBy1") as! Element
-        opponentElement3 = childNode(withName: "opponentDamagedBy2") as! Element
-        opponentElement4 = childNode(withName: "opponentDamagedBy3") as! Element
-        opponentElement5 = childNode(withName: "opponentDamagedBy4") as! Element
+        opponentElement1 = childNode(withName: "opponentElement1") as! Element
+        opponentElement2 = childNode(withName: "opponentElement2") as! Element
+        opponentElement3 = childNode(withName: "opponentElement3") as! Element
+        opponentElement4 = childNode(withName: "opponentElement4") as! Element
+        opponentElement5 = childNode(withName: "opponentElement5") as! Element
+        
+        nodeToHide1 = childNode(withName: "nodeToHide1") as! SKSpriteNode
+        nodeToHide2 = childNode(withName: "nodeToHide2") as! SKSpriteNode
+        nodeToHide3 = childNode(withName: "nodeToHide3") as! SKSpriteNode
+        
         
         let distance: CGFloat = 200
         
@@ -147,8 +157,8 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         }
         
         var prevType: Element.element?
-        for number in 0...4 {
-            let nextElement = childNode(withName: "element\(number)") as! Element
+        for number in 1...5 {
+            let nextElement = childNode(withName: "playerElement\(number)") as! Element
             nextElement.belongsTo = .human
             if let unwrappedType = prevType {
                 nextElement.type = Element.strengthens[unwrappedType]!
@@ -164,13 +174,14 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         
  
         prevType = nil
-        for number in 0...4 {
-            let nextElement = childNode(withName: "opponentDamagedBy\(number)") as! Element
+        for number in 1...5 {
+            let nextElement = childNode(withName: "opponentElement\(number)") as! Element
             nextElement.belongsTo = .AI
             if prevType != nil {
                 nextElement.type = Element.strengthens[prevType!]!
             } else {
                 nextElement.type = Element.damages[player.startingType]!
+                opponent.startingType = nextElement.type
             }
             nextElement.color = Element.colors[nextElement.type]!
             nextElement.startingPosition = nextElement.position
@@ -189,12 +200,29 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
             self.gameState = .active
             self.player.element(self.player.startingType).health += 1
             self.turnsTaken += 1
+            self.delayAnimation()
             self.playerTurn = false
+            
+            
             
         }
         
     }
     
+    // UI animation functions
+    func delayAnimation() {
+        let hide = SKAction.hide()
+        let delay = SKAction.wait(forDuration: 0.5)
+        let unhide = SKAction.unhide()
+        let sequence = SKAction.sequence([hide,delay,unhide])
+        
+        nodeToHide1.run(sequence)
+        nodeToHide2.run(sequence)
+        nodeToHide3.run(sequence)
+    }
+    
+    
+    // AI action functions
     func opponentTransform(_ elementsToTransform: [Element]) {
         let selectedElement = elementsToTransform[Int(arc4random_uniform(UInt32(elementsToTransform.count)))]
         let transformed: [Element.element : Element] = [.earth: opponent.metal, .metal: opponent.water, .water: opponent.wood, .wood: opponent.fire, .fire: opponent.earth]
@@ -208,6 +236,7 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         selectedElement.health -= opponentElement[selectedElement.type]!.health
     }
     
+    // AI opponent turn function
     func opponentTurn() {
         // Making the arrays
         var balanceable: [Element] = []
@@ -252,6 +281,7 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         playerTurn = true
     }
     
+    // continuous update function - where health values are reset and game over condition is checked
     override func update(_ currentTime: TimeInterval) {
         if playerTurn == false {
             opponentTurn()
@@ -265,7 +295,7 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         }
         // game over condition
         if self.gameState == .active {
-            if opponent.wood.health == 0 && opponent.fire.health == 0 && opponent.earth.health == 0 && opponent.metal.health == 0 && opponent.water.health == 0 {
+            if player.wood.health >= 3 && player.fire.health >= 4 && player.earth.health >= 1 && player.metal.health >= 5 && player.water.health == 2 {
                 self.resetButton.isHidden = false
                 self.victoryLabel.isHidden = false
                 self.gameState = .inactive
