@@ -24,6 +24,7 @@ class Player {
     {
         for (_, element) in [wood, fire, earth, metal, water].enumerated() {
             element?.delegate = self
+            (element!.childNode(withName: "label") as! SKLabelNode).text = String(element!.health)
         }
     }
     

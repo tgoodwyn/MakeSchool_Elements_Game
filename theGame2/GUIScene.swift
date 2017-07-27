@@ -94,16 +94,16 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
             
             if let view = self.view as! SKView? {
                 // Load the SKScene from 'GameScene.sks'
-                if let scene = SKScene(fileNamed: "ReferenceScene") {
+                if let scene = ReferenceScene(fileNamed: "ReferenceScene") {
                     // Set the scale mode to scale to fit the window
                     scene.scaleMode = .aspectFill
-                    
+                    scene.guiScene = self
                     // Present the scene
                     view.presentScene(scene)
                 }
-            
-            
+            }
         }
+        
         let distance: CGFloat = 200
         
         playerElement1.position =
@@ -184,7 +184,6 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
             }
             nextElement.color = Element.colors[nextElement.type]!
             nextElement.startingPosition = nextElement.position
-            nextElement.health = 0
             player.setElement(nextElement.type, to: nextElement)
             prevType = nextElement.type
         }
@@ -202,7 +201,6 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
             }
             nextElement.color = Element.colors[nextElement.type]!
             nextElement.startingPosition = nextElement.position
-            nextElement.health = 0
             opponent.setElement(nextElement.type, to: nextElement)
             prevType = nextElement.type
         }

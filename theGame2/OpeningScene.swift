@@ -23,25 +23,19 @@ class OpeningScene: SKScene, SKPhysicsContactDelegate {
     var metalNode: SKShapeNode!
     var woodNode: SKShapeNode!
     
-    // smaller pentagon nodes
-    var top: SKShapeNode!
-    var sideRight: SKShapeNode!
-    var sideLeft: SKShapeNode!
-    var bottomRight: SKShapeNode!
-    var bottomLeft: SKShapeNode!
-    
+
     // center of node positions
     var fireCenter: CGPoint!
     var woodCenter: CGPoint!
     var earthCenter: CGPoint!
     var metalCenter: CGPoint!
     var waterCenter: CGPoint!
-    
-    var smallTop: CGPoint!
-    var smallSideRight: CGPoint!
-    var smallSideLeft: CGPoint!
-    var smallBottomRight: CGPoint!
-    var smallBottomLeft: CGPoint!
+   
+    var fireLabel: SKLabelNode!
+    var woodLabel: SKLabelNode!
+    var earthLabel: SKLabelNode!
+    var waterLabel: SKLabelNode!
+    var metalLabel: SKLabelNode!
     
     func makeCircle(location: CGPoint, color: UIColor, name: String) {
         
@@ -65,7 +59,7 @@ class OpeningScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         
         let distance1: CGFloat = 150
-        let distance2: CGFloat = 90
+        
         
         woodCenter = CGPoint(x: size.width / 2, y: size.height * 2 / 3  + distance1 - 15)
         fireCenter = CGPoint(x: woodCenter.x + distance1 * sin(54 * .pi / 180), y: woodCenter.y - distance1 * cos(54 * .pi / 180))
@@ -73,32 +67,31 @@ class OpeningScene: SKScene, SKPhysicsContactDelegate {
         metalCenter = CGPoint(x: earthCenter.x - distance1, y: earthCenter.y)
         waterCenter = CGPoint(x: metalCenter.x - distance1 * sin(18 * .pi / 180), y: metalCenter.y + distance1 * cos(18 * .pi / 180))
         
-        
-        smallTop = CGPoint(x: size.width / 2, y: size.height * 1 / 3 + 15)
-        smallSideRight = CGPoint(x: smallTop.x + distance2 * sin(54 * .pi / 180), y: smallTop.y - distance2 * cos(54 * .pi / 180))
-        smallBottomRight = CGPoint(x: smallSideRight.x - distance2 * cos(72 * .pi / 180), y: smallSideRight.y - distance2 * sin(72 * .pi / 180))
-        smallBottomLeft = CGPoint(x: smallBottomRight.x - distance2, y: smallBottomRight.y)
-        smallSideLeft = CGPoint(x: smallBottomLeft.x - distance2 * sin(18 * .pi / 180), y: smallBottomLeft.y + distance2 * cos(18 * .pi / 180))
-        
-        
-        
         makeCircle(location: woodCenter, color: .green, name: "wood")
         makeCircle(location: fireCenter, color: .red, name: "fire")
         makeCircle(location: earthCenter, color: .brown, name: "earth")
         makeCircle(location: metalCenter, color: .black, name: "metal")
         makeCircle(location: waterCenter, color: .blue, name: "water")
 
-        makeCircle(location: smallTop, color: .green, name: "woodSmall")
-        makeCircle(location: smallSideRight, color: .red, name: "fireSmall")
-        makeCircle(location: smallBottomRight, color: .brown, name: "earthSmall")
-        makeCircle(location: smallBottomLeft, color: .black, name: "metalSmall")
-        makeCircle(location: smallSideLeft, color: .blue, name: "waterSmall")
-        
         woodNode = childNode(withName: "wood") as! SKShapeNode
         fireNode = childNode(withName: "fire") as! SKShapeNode
         earthNode = childNode(withName: "earth") as! SKShapeNode
         metalNode = childNode(withName: "metal") as! SKShapeNode
         waterNode = childNode(withName: "water") as! SKShapeNode
+        
+        var fireLabel = childNode(withName: "fireLabel") as! SKLabelNode
+        var woodLabel = childNode(withName: "woodLabel") as! SKLabelNode
+        var earthLabel = childNode(withName: "earthLabel") as! SKLabelNode
+        var waterLabel = childNode(withName: "waterLabel") as! SKLabelNode
+        var metalLabel = childNode(withName: "metalLabel") as! SKLabelNode
+        
+        let labelDistance: CGFloat = 50
+        
+        fireLabel.position = CGPoint(x: fireCenter.x, y: fireCenter.y + labelDistance)
+        woodLabel.position = CGPoint(x: woodCenter.x, y: woodCenter.y + labelDistance)
+        earthLabel.position = CGPoint(x: earthCenter.x, y: earthCenter.y - labelDistance)
+        waterLabel.position = CGPoint(x: waterCenter.x, y: waterCenter.y + labelDistance)
+        metalLabel.position = CGPoint(x: metalCenter.x, y: metalCenter.y - labelDistance)
     }
     
     override func update(_ currentTime: TimeInterval) {

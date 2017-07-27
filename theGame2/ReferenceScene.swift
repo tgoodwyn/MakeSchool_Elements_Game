@@ -35,6 +35,9 @@ class ReferenceScene: SKScene {
     var arrowAttack4: SKSpriteNode!
     var arrowAttack5: SKSpriteNode!
     
+    var backToGame: MSButtonNode!
+    
+    var guiScene: GUIScene!
     
     override func didMove(to view: SKView) {
         self.anchorPoint = CGPoint(x: 0, y:0)
@@ -62,7 +65,23 @@ class ReferenceScene: SKScene {
         arrowAttack4 = childNode(withName: "arrowAttack4") as! SKSpriteNode
         arrowAttack5 = childNode(withName: "arrowAttack5") as! SKSpriteNode
         
-   
+        backToGame = childNode(withName: "backToGame") as! MSButtonNode
+        
+        backToGame.selectedHandler = {
+            
+            SKTransition.flipVertical(withDuration: 0)
+            
+            if let view = self.view as! SKView? {
+                // Load the SKScene from 'GameScene.sks'
+                if let scene = self.guiScene {
+                    // Set the scale mode to scale to fit the window
+                    scene.scaleMode = .aspectFill
+                    
+                    // Present the scene
+                    view.presentScene(scene)
+                }
+            }
+        }
         
         let distance: CGFloat = 275
         
