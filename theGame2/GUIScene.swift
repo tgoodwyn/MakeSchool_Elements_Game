@@ -205,6 +205,7 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
             prevType = nextElement.type
         }
       
+        var testVar: Int
         
         //and so on
         physicsWorld.contactDelegate = self
