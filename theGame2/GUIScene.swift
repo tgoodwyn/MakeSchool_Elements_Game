@@ -19,6 +19,7 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
     
     var gameState: gameState = .inactive
  
+    var lastElementsTransformed: [Element.element] = []
     
     var player = Player()
     var opponent = Player()
@@ -97,6 +98,8 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         }
         
         let distance: CGFloat = 200
+        let distance2: CGFloat = 100
+        
         
         playerElement1.position =
             CGPoint(x: size.width / 4,
@@ -116,19 +119,19 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         
         opponentElement1.position =
             CGPoint(x: size.width * 3 / 4,
-                    y: size.height / 2 + distance)
+                    y: size.height / 2 + distance2)
         opponentElement2.position =
-            CGPoint(x: opponentElement1.position.x + distance * sin(54 * .pi / 180),
-                    y: opponentElement1.position.y - distance * cos(54 * .pi / 180))
+            CGPoint(x: opponentElement1.position.x + distance2 * sin(54 * .pi / 180),
+                    y: opponentElement1.position.y - distance2 * cos(54 * .pi / 180))
         opponentElement3.position =
-            CGPoint(x: opponentElement2.position.x - distance * cos(72 * .pi / 180),
-                    y: opponentElement2.position.y - distance * sin(72 * .pi / 180))
+            CGPoint(x: opponentElement2.position.x - distance2 * cos(72 * .pi / 180),
+                    y: opponentElement2.position.y - distance2 * sin(72 * .pi / 180))
         opponentElement4.position =
-            CGPoint(x: opponentElement3.position.x - distance,
+            CGPoint(x: opponentElement3.position.x - distance2,
                     y: opponentElement3.position.y)
         opponentElement5.position =
-            CGPoint(x: opponentElement4.position.x - distance * sin(18 * .pi / 180),
-                    y: opponentElement4.position.y + distance * cos(18 * .pi / 180))
+            CGPoint(x: opponentElement4.position.x - distance2 * sin(18 * .pi / 180),
+                    y: opponentElement4.position.y + distance2 * cos(18 * .pi / 180))
         
         
         // opponentActionLabel = childNode(withName: "opponentAction") as! SKLabelNode
@@ -232,9 +235,21 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
     
     // AI action functions
     func opponentTransform(_ elementsToTransform: [Element]) {
-        let selectedElement = elementsToTransform[Int(arc4random_uniform(UInt32(elementsToTransform.count)))]
+        var acceptable = false
+        var selectedElement: Element = opponent.wood
         let transformed: [Element.element : Element] = [.earth: opponent.metal, .metal: opponent.water, .water: opponent.wood, .wood: opponent.fire, .fire: opponent.earth]
+        while !acceptable {
+            selectedElement = elementsToTransform[Int(arc4random_uniform(UInt32(elementsToTransform.count)))]
+            if (lastElementsTransformed.count < 1 || lastElementsTransformed.first != selectedElement.type) && (lastElementsTransformed.count < 2 || lastElementsTransformed[1] != selectedElement.type) {
+                acceptable = true
+            }
+        }
+        
         transformed[selectedElement.type]!.health += selectedElement.health
+        lastElementsTransformed.append(selectedElement.type)
+        if lastElementsTransformed.count > 2 {
+            lastElementsTransformed.removeFirst()
+        }
         let turnCount: Int = turnsAllowed + 1
         print("\(selectedElement.type) supports on turn \(turnCount)")
     }
@@ -243,27 +258,9 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         let selectedElement = elementsToBalance[Int(arc4random_uniform(UInt32(elementsToBalance.count)))]
         let opponentElement : [Element.element : Element] = [.earth: opponent.wood, .metal: opponent.fire, .water: opponent.earth, .wood: opponent.metal, .fire: opponent.water]
         selectedElement.health -= opponentElement[selectedElement.type]!.health
+        selectedElement.health = abs(selectedElement.health)
         let turnCount: Int = turnsAllowed + 1
         print("\(selectedElement.type) is weakened on turn \(turnCount)")
-    }
-    
-    func resetElementHealth() {
-        
-        if opponent.wood.health < 0 {
-            opponent.wood.health = 0
-        }
-        if opponent.fire.health < 0 {
-            opponent.fire.health = 0
-        }
-        if opponent.earth.health < 0 {
-            opponent.earth.health = 0
-        }
-        if opponent.metal.health < 0 {
-            opponent.metal.health = 0
-        }
-        if opponent.water.health < 0 {
-            opponent.water.health = 0
-        }
     }
     
     // AI opponent turn function
@@ -282,30 +279,20 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-        if balanceable.count > 0 {
-            
-            if opponent.wood.health > 50 || opponent.fire.health > 50 || opponent.earth.health > 50 || opponent.metal.health > 50 || opponent.water.health > 50 {
-                opponentBalance(balanceable)
-                turnsAllowed += 1
-                resetElementHealth()
-            } else {
-                let rngVal = arc4random_uniform(2)
-                if rngVal == 1 {
-                    opponentBalance(balanceable)
-                    turnsAllowed += 1
-                    resetElementHealth()
-                    
-                } else {
-                    opponentTransform(transformable)
-                    turnsAllowed += 1
-                    resetElementHealth()
-                }
-            }
+/*
+ if opponent.wood.health > 50 || opponent.fire.health > 50 || opponent.earth.health > 50 || opponent.metal.health > 50 || opponent.water.health > 50 {
+ opponentBalance(balanceable)
+ turnsAllowed += 1
+ resetElementHealth()
+ } else {
+ */
+        if balanceable.count > 0 && arc4random_uniform(2) == 0 {
+            opponentBalance(balanceable)
+            lastElementsTransformed = []
         } else  {
             opponentTransform(transformable)
-            turnsAllowed += 1
-            resetElementHealth()
         }
+        turnsAllowed += 1
         
         
 
@@ -416,9 +403,11 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
         if playerElement1 != nil && playerElement2 != nil {
             if Element.damagedBy[playerElement1!.type] == playerElement2!.type {
                 playerElement1!.health -= playerElement2!.health
+                playerElement1!.health = abs(playerElement1!.health)
                 turnsAllowed -= 1
             } else if Element.damagedBy[playerElement2!.type] == playerElement1!.type {
                 playerElement2!.health -= playerElement1!.health
+                playerElement2!.health = abs(playerElement2!.health)
                 turnsAllowed -= 1
             }
         }
@@ -434,6 +423,8 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
             } else {
             objectGrabbed = nil
             }
+        } else if atPoint(location) is SKLabelNode && atPoint(location).parent is Element && (atPoint(location).parent as! Element).belongsTo == .human {
+            objectGrabbed = atPoint(location).parent as? Element
         } else {
             objectGrabbed = nil
         }
