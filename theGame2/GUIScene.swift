@@ -179,7 +179,7 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
             if prevType != nil {
                 nextElement.type = Element.strengthens[prevType!]!
             } else {
-                nextElement.type = Element.damages[player.startingType]!
+                nextElement.type = player.startingType
                 opponent.startingType = nextElement.type
             }
             nextElement.color = Element.colors[nextElement.type]!
@@ -287,32 +287,26 @@ class GUIScene: SKScene, SKPhysicsContactDelegate {
             if opponent.wood.health > 50 || opponent.fire.health > 50 || opponent.earth.health > 50 || opponent.metal.health > 50 || opponent.water.health > 50 {
                 opponentBalance(balanceable)
                 turnsAllowed += 1
-                print("opponent weakens on turn \(turnsAllowed).")
                 resetElementHealth()
             } else {
                 let rngVal = arc4random_uniform(2)
                 if rngVal == 1 {
                     opponentBalance(balanceable)
                     turnsAllowed += 1
-                    print("opponent weakens on turn \(turnsAllowed).")
                     resetElementHealth()
                     
                 } else {
                     opponentTransform(transformable)
                     turnsAllowed += 1
-                    print("opponent supports on turn \(turnsAllowed).")
                     resetElementHealth()
                 }
             }
         } else  {
             opponentTransform(transformable)
             turnsAllowed += 1
-            print("opponent supports on turn \(turnsAllowed).")
             resetElementHealth()
         }
         
-        print("opponent health values:")
-        print("wood: \(opponent.wood.health), fire: \(opponent.fire.health), earth: \(opponent.earth.health), metal: \(opponent.metal.health), water: \(opponent.water.health)")
         
 
     }
