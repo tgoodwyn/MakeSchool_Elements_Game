@@ -26,6 +26,8 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
     
     var mainMenu: MSButtonNode!
     
+    var comboZone1: SKSpriteNode!
+    var comboZone2: SKSpriteNode!
     
     override func didMove(to view: SKView) {
 
@@ -35,7 +37,10 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
         playerElement3 = childNode(withName: "playerElement3") as! Element
         playerElement4 = childNode(withName: "playerElement4") as! Element
         playerElement5 = childNode(withName: "playerElement5") as! Element
-                
+        
+        comboZone1 = childNode(withName: "comboZone1") as! Element
+        comboZone2 = childNode(withName: "comboZone2") as! Element
+        
         mainMenu = childNode(withName: "mainMenu") as! MSButtonNode
         
         mainMenu.selectedHandler = {
@@ -93,11 +98,15 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
         let contactNodeA = contact.bodyA.node as! SKSpriteNode
         let contactNodeB = contact.bodyB.node as! SKSpriteNode
         // Player squares
-        var playerElement1: Element?
+        var playerElement: Element?
         var playerElement2: Element?
+        
+        var zoneNode: SKSpriteNode
+        
         if let nodeA = contactNodeA as? Element {
                 playerElement1 = nodeA
-        
+        } else {
+            
         }
         if let nodeB = contactNodeB as? Element {
         
