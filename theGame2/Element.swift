@@ -38,7 +38,7 @@ class Element: SKSpriteNode {
     
     var health = 0 {
         didSet {
-            (childNode(withName: "label") as! SKLabelNode).text = String(health)
+            // (childNode(withName: "label") as! SKLabelNode).text = String(health)
         }
     }
     
