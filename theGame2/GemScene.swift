@@ -33,6 +33,8 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
     var elementLockedIn1: Element?
     var elementLockedIn2: Element?
     
+    var effect: SKSpriteNode!
+    
     override func didMove(to view: SKView) {
 
         // element node connections and locations
@@ -44,6 +46,9 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
         
         comboZone1 = childNode(withName: "//comboZone1") as! SKSpriteNode
         comboZone2 = childNode(withName: "//comboZone2") as! SKSpriteNode
+        
+        effect = childNode(withName: "effect") as! SKSpriteNode
+        
         
         // mainMenu = childNode(withName: "mainMenu") as! MSButtonNode
         
@@ -123,12 +128,21 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
         if playerElement != nil && zoneNode != nil {
             destZone = zoneNode
             
-            if zoneNode?.name == ("comboZone1") {
+            if zoneNode?.name == ("comboZone1") && !object1Locked {
                 elementLockedIn1 = playerElement
                 object1Locked = true
-            } else if zoneNode?.name == ("comboZone2") {
+            } else if zoneNode?.name == ("comboZone1") {
+                
+                elementLockedIn1 = playerElement
+                
+            }
+            
+            if zoneNode?.name == ("comboZone2") && !object2Locked {
                 elementLockedIn2 = playerElement
                 object2Locked = true
+            } else if zoneNode?.name == ("comboZone2") {
+                elementLockedIn2?.position = (elementLockedIn2?.startingPosition)!
+                elementLockedIn2 = playerElement
             }
             
         }
@@ -156,68 +170,78 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
+        print("touch end: the location of \(playerElement2.type.rawValue) is \(playerElement2.position) vs. \(playerElement2.startingPosition)")
         if let dest = destZone {
-            
             objectGrabbed.position = dest.position
             objectGrabbed.position.y = dest.position.y + 22
             destZone = nil
-            
+            objectGrabbed = nil
+            print("touch end lock: the location of \(playerElement2.type.rawValue) is \(playerElement2.position) vs \(playerElement2.startingPosition)")
+            if  let e1 = elementLockedIn1, let e2 = elementLockedIn2 {
+                func resetElements() {
+                    self.isUserInteractionEnabled = false
+                    let moveBackE1 = SKAction.move(to: elementLockedIn1!.startingPosition, duration: 0)
+                    let moveBackE2 = SKAction.move(to: elementLockedIn2!.startingPosition, duration: 0)
+                    let elementSeq1 = SKAction.sequence([SKAction.wait(forDuration: 1.25), moveBackE1])
+                    let elementSeq2 = SKAction.sequence([SKAction.wait(forDuration: 1.25), moveBackE2])
+                    e1.run(elementSeq1)
+                    e2.run(elementSeq2)
+                    elementLockedIn1 = nil
+                    elementLockedIn2 = nil
+                    self.isUserInteractionEnabled = true
+                }
+                if object1Locked && object2Locked {
+                    if Element.strengthens[e1.type] == e2.type {
+                        animateElement(e2.type)
+                        animateHealth(e1: e2, e2: e1, add: true)
+                        resetElementHealth()
+                        resetElements()
+                    } else if Element.strengthens[e2.type] == e1.type {
+                        
+                        animateElement(e1.type)
+                        animateHealth(e1: e1, e2: e2, add: true)
+                        resetElementHealth()
+                        resetElements()
+                    } else if Element.damagedBy[e1.type] == e2.type {
+                        
+                        animateElement(e1.type)
+                        animateHealth(e1: e1, e2: e2, add: false)
+                        resetElementHealth()
+                        resetElements()
+                    } else if Element.damagedBy[e2.type] == e1.type {
+                        
+                        animateElement(e2.type)
+                        animateHealth(e1: e2, e2: e1, add: false)
+                        resetElementHealth()
+                        resetElements()
+                    }
+                }
+            }
         } else if objectGrabbed != nil  {
-            
-            print("objectGrabbed is \(objectGrabbed)")
-            print("elementLockedIn1 is \(elementLockedIn1)")
-            print("elementLockedIn2 is \(elementLockedIn2)")
-            
             if objectGrabbed == elementLockedIn1 {
-                print("object l leaving")
                 object1Locked = false
                 elementLockedIn1 = nil
             }
             if objectGrabbed == elementLockedIn2 {
-                print("object 2 leaving")
                 object2Locked = false
                 elementLockedIn2 = nil
             }
             objectGrabbed.position = objectGrabbed.startingPosition
+            print("this is being called")
         }
         
         
         
-        if  let e1 = elementLockedIn1, let e2 = elementLockedIn2 {
-           
-            print("working")
-            
-            func resetElements() {
-                elementLockedIn1?.position = (elementLockedIn1?.startingPosition)!
-                elementLockedIn2?.position = (elementLockedIn2?.startingPosition)!
-                elementLockedIn1 = nil
-                elementLockedIn2 = nil
-                
-            }
-            
-            if object1Locked == true && object1Locked == true {
-                if Element.strengthens[e1.type] == e2.type {
-                    print("e1 supports e2")
-                    resetElements()
-                    print(elementLockedIn1)
-                } else if Element.strengthens[e2.type] == e1.type {
-                    print("e2 supports e1")
-                    resetElements()
-                } else if Element.damagedBy[e1.type] == e2.type {
-                    print("e2 damages e1")
-                    resetElements()
-                } else if Element.damagedBy[e2.type] == e1.type {
-                    print("e1 damages e2")
-                    resetElements()
-                }
-            }
-        }
         
         
     }
     override func update(_ currentTime: TimeInterval) {
-        /*for value in 1...10 {
+        for element in [playerElement1, playerElement2, playerElement3, playerElement4, playerElement5] {
+            if element != objectGrabbed && element != elementLockedIn1 && element != elementLockedIn2 {
+                element!.position = element!.startingPosition
+            }
+        }
+        for value in 1...10 {
             let fireGem = childNode(withName: "fireGem\(value)") as! Gem
             fireGem.number = value
             if fireGem.number > player.fire.health {
@@ -254,10 +278,59 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                 waterGem.isHidden = false
             }
  
-        }*/
+        }
         
     }
-
+    
+    func animateElement(_ type: Element.element) {
+    
+        self.isUserInteractionEnabled = false
+        let delay = SKAction.wait(forDuration: 0.25)
+        var animate = SKAction(named: "magicFX")
+        
+        switch type {
+            case .wood:
+                animate = SKAction(named: "woodFX")
+                break
+            case .fire:
+                animate = SKAction(named: "fireFX")
+                break
+            case .earth:
+                animate = SKAction(named: "earthFX")
+                break
+            case.metal:
+                animate = SKAction(named: "metalFX")
+                break
+            case.water:
+                animate = SKAction(named: "waterFX")
+                break
+            }
+            
+            
+        let appear = SKAction.fadeAlpha(to: 1, duration: 0)
+        let disappear = SKAction.fadeAlpha(to: 0, duration: 0)
+        let seq = SKAction.sequence([delay, appear, animate!, disappear])
+        effect.run(seq)
+    }
+    
+    func animateHealth(e1: Element, e2: Element, add: Bool) {
+        let delay = SKAction.wait(forDuration: 1.25)
+        let anAction = SKAction.run {
+            if add == true {
+                e1.health += e2.health
+            } else {
+                e1.health -= e2.health
+            }
+            self.resetElementHealth()
+        }
+        let seq = SKAction.sequence([delay, anAction])
+        effect.run(seq)
+        
+        
+        
+    }
+    
+    
     
     
 }

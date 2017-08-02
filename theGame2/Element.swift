@@ -10,8 +10,12 @@ import SpriteKit
 
 class Element: SKSpriteNode {
     
-    enum element {
-        case fire, earth, metal, water, wood
+    enum element : String {
+        case fire = "fire",
+        earth = "earth",
+        metal = "metal",
+        water = "water",
+        wood = "wood"
     }
     
     enum playerName {
@@ -34,11 +38,9 @@ class Element: SKSpriteNode {
     
     var startingPosition: CGPoint!
     
-    
-    
     var health = 0 {
         didSet {
-            // (childNode(withName: "label") as! SKLabelNode).text = String(health)
+             (self.parent!.childNode(withName: "\(type.rawValue)Label") as! SKLabelNode).text = String(health)
         }
     }
     
