@@ -27,6 +27,9 @@
 		F79DDB011F2FCFF100DB5162 /* Gem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79DDB001F2FCFF100DB5162 /* Gem.swift */; };
 		F79DDB031F2FDA2C00DB5162 /* MainMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = F79DDB021F2FDA2C00DB5162 /* MainMenu.sks */; };
 		F79DDB051F2FE03000DB5162 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79DDB041F2FE03000DB5162 /* MainMenu.swift */; };
+		F7B01D2F1F339B7E00134DD8 /* LoadingScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F7B01D2E1F339B7E00134DD8 /* LoadingScene.sks */; };
+		F7B01D331F33A10700134DD8 /* TutorialMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = F7B01D321F33A10700134DD8 /* TutorialMenu.sks */; };
+		F7B01D351F33A13E00134DD8 /* TutorialMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B01D341F33A13E00134DD8 /* TutorialMenu.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +55,9 @@
 		F79DDB001F2FCFF100DB5162 /* Gem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gem.swift; sourceTree = "<group>"; };
 		F79DDB021F2FDA2C00DB5162 /* MainMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MainMenu.sks; sourceTree = "<group>"; };
 		F79DDB041F2FE03000DB5162 /* MainMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
+		F7B01D2E1F339B7E00134DD8 /* LoadingScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LoadingScene.sks; sourceTree = "<group>"; };
+		F7B01D321F33A10700134DD8 /* TutorialMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TutorialMenu.sks; sourceTree = "<group>"; };
+		F7B01D341F33A13E00134DD8 /* TutorialMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialMenu.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,8 +97,11 @@
 				F79DDAFE1F2FAE1600DB5162 /* GemScene.swift */,
 				F750FD191F1D7AD50016FE81 /* Element.swift */,
 				F750FD171F1D7ACD0016FE81 /* Player.swift */,
+				F7B01D321F33A10700134DD8 /* TutorialMenu.sks */,
+				F7B01D341F33A13E00134DD8 /* TutorialMenu.swift */,
 				F79DDB021F2FDA2C00DB5162 /* MainMenu.sks */,
 				F79DDB041F2FE03000DB5162 /* MainMenu.swift */,
+				F7B01D2E1F339B7E00134DD8 /* LoadingScene.sks */,
 				F79DDB001F2FCFF100DB5162 /* Gem.swift */,
 				F79DDAFC1F2FA55D00DB5162 /* ComboScene.sks */,
 				F77FCBA91F1FE0FF002984B6 /* GUIScene.sks */,
@@ -172,6 +181,8 @@
 				F77FCBAA1F1FE0FF002984B6 /* GUIScene.sks in Resources */,
 				F79DDB031F2FDA2C00DB5162 /* MainMenu.sks in Resources */,
 				F7415B991F293E7300F02643 /* Assets.xcassets in Resources */,
+				F7B01D331F33A10700134DD8 /* TutorialMenu.sks in Resources */,
+				F7B01D2F1F339B7E00134DD8 /* LoadingScene.sks in Resources */,
 				F7415B931F29026F00F02643 /* ReferenceScene.sks in Resources */,
 				F79DDAFD1F2FA55D00DB5162 /* ComboScene.sks in Resources */,
 				F750FD071F1D7A700016FE81 /* Main.storyboard in Resources */,
@@ -190,6 +201,7 @@
 			files = (
 				F79DDB051F2FE03000DB5162 /* MainMenu.swift in Sources */,
 				F750FD181F1D7ACD0016FE81 /* Player.swift in Sources */,
+				F7B01D351F33A13E00134DD8 /* TutorialMenu.swift in Sources */,
 				F750FD041F1D7A700016FE81 /* GameViewController.swift in Sources */,
 				F79DDAFF1F2FAE1600DB5162 /* GemScene.swift in Sources */,
 				F750FD1C1F1D7ADC0016FE81 /* MSButtonNode.swift in Sources */,

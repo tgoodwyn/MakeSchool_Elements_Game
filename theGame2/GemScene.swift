@@ -336,6 +336,11 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
             objectGrabbed.position.y = dest.position.y + 22
             destZone = nil
             objectGrabbed = nil
+            for element in [playerElement1, playerElement2, playerElement3, playerElement4, playerElement5] {
+                if element != objectGrabbed && element != elementLockedIn1 && element != elementLockedIn2 {
+                    element!.position = element!.startingPosition
+                }
+            }
             if  let e1 = elementLockedIn1, let e2 = elementLockedIn2 {
                 func resetElements() {
                     self.isUserInteractionEnabled = false
@@ -417,11 +422,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
         
         
         
-        for element in [playerElement1, playerElement2, playerElement3, playerElement4, playerElement5] {
-            if (object1Locked && element != objectGrabbed && element != elementLockedIn1) || (object2Locked && element != objectGrabbed && element != elementLockedIn2) {
-                element!.position = element!.startingPosition
-            }
-        }
+        
         for value in 1...10 {
             let fireGem = childNode(withName: "fireGem\(value)") as! Gem
             fireGem.number = value
@@ -514,12 +515,11 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                     self.gameState = .inactive
                     self.turnsAllowed = 0
                 } else if self.turnsAllowed == 0 {
-                    
+                    self.gamesCompleted = 0
                     self.startLabel.isHidden = false
                     self.startLabel.text = "Fail"
-                    self.setBoardButton.isHidden = false
+                    self.restartButton.isHidden = false
                     self.turnsAllowed = 0
-                    self.resetBoard()
                     self.gameState = .inactive
                 }
             }

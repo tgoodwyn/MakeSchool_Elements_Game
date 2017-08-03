@@ -9,9 +9,9 @@
 import Foundation
 import SpriteKit
 
-class MainMenu: SKScene {
+class TutorialScene: SKScene {
     
-    var buttonNode: MSButtonNode!
+    
     
     var fire: SKSpriteNode!
     var earth: SKSpriteNode!
@@ -25,7 +25,7 @@ class MainMenu: SKScene {
         
         self.anchorPoint = CGPoint(x: 0, y: 0)
         
-        buttonNode = childNode(withName: "buttonNode") as! MSButtonNode
+    
         fire = childNode(withName: "fire") as! SKSpriteNode
         earth = childNode(withName: "earth") as! SKSpriteNode
         metal = childNode(withName: "metal") as! SKSpriteNode
@@ -36,7 +36,7 @@ class MainMenu: SKScene {
         
         wood.position =
             CGPoint(x: size.width / 2,
-                    y: size.height / 2  + distance - 100)
+                    y: size.height / 2  + distance - 50)
         fire.position =
             CGPoint(x: wood.position.x + distance * sin(54 * .pi / 180),
                     y: wood.position.y - distance * cos(54 * .pi / 180))
@@ -50,16 +50,7 @@ class MainMenu: SKScene {
             CGPoint(x: metal.position.x - distance * sin(18 * .pi / 180),
                     y: metal.position.y + distance * cos(18 * .pi / 180))
         
-        buttonNode.selectedHandler = {
-            
-            SKTransition.flipVertical(withDuration: 0)
-            
-            let tutorial = TutorialScene(fileNamed: "TutorialMenu")
-            tutorial?.scaleMode = .aspectFill
-            view.presentScene(tutorial)
-        }
     }
-    
     
     
     
