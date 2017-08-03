@@ -34,13 +34,24 @@ class Element: SKSpriteNode {
     var belongsTo: playerName!
     
     weak var delegate: Player!
-    
+    /*
+    switch belongsTo {
+    case .human:
+    delegate = GemScene.player
+    break
+    case .opponent:
+    delegate = GemScene.opponent
+    break
+    }
+ */
     
     var startingPosition: CGPoint!
     
+
+    
     var health = 0 {
         didSet {
-             (self.parent!.childNode(withName: "\(type.rawValue)Label") as! SKLabelNode).text = String(health)
+             //(self.parent!.childNode(withName: "\(type.rawValue)Label") as! SKLabelNode).text = String(health)
         }
     }
     
