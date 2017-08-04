@@ -13,11 +13,11 @@ class TutorialScene: SKScene {
     
     
     
-    var fire: SKSpriteNode!
-    var earth: SKSpriteNode!
-    var metal: SKSpriteNode!
-    var wood: SKSpriteNode!
-    var water: SKSpriteNode!
+    var fire: MSButtonNode!
+    var earth: MSButtonNode!
+    var metal: MSButtonNode!
+    var wood: MSButtonNode!
+    var water: MSButtonNode!
     
     
     
@@ -26,11 +26,11 @@ class TutorialScene: SKScene {
         self.anchorPoint = CGPoint(x: 0, y: 0)
         
     
-        fire = childNode(withName: "fire") as! SKSpriteNode
-        earth = childNode(withName: "earth") as! SKSpriteNode
-        metal = childNode(withName: "metal") as! SKSpriteNode
-        wood = childNode(withName: "wood") as! SKSpriteNode
-        water = childNode(withName: "water") as! SKSpriteNode
+        fire = childNode(withName: "fire") as! MSButtonNode
+        earth = childNode(withName: "earth") as! MSButtonNode
+        metal = childNode(withName: "metal") as! MSButtonNode
+        wood = childNode(withName: "wood") as! MSButtonNode
+        water = childNode(withName: "water") as! MSButtonNode
         
         let distance: CGFloat = 350
         
@@ -49,6 +49,47 @@ class TutorialScene: SKScene {
         water.position =
             CGPoint(x: metal.position.x - distance * sin(18 * .pi / 180),
                     y: metal.position.y + distance * cos(18 * .pi / 180))
+        
+        
+        wood.selectedHandler = {
+            SKTransition.flipVertical(withDuration: 0)
+            
+            let tutorial = WoodTutorial1(fileNamed: "WoodTutorial1")
+            tutorial?.scaleMode = .aspectFill
+            view.presentScene(tutorial)
+        }
+        
+        fire.selectedHandler = {
+            SKTransition.flipVertical(withDuration: 0)
+            
+            let tutorial = WoodTutorial1(fileNamed: "WoodTutorial1")
+            tutorial?.scaleMode = .aspectFill
+            view.presentScene(tutorial)
+        }
+        
+        earth.selectedHandler = {
+            SKTransition.flipVertical(withDuration: 0)
+            
+            let tutorial = WoodTutorial1(fileNamed: "WoodTutorial1")
+            tutorial?.scaleMode = .aspectFill
+            view.presentScene(tutorial)
+        }
+        
+        metal.selectedHandler = {
+            SKTransition.flipVertical(withDuration: 0)
+            
+            let tutorial = WoodTutorial1(fileNamed: "WoodTutorial1")
+            tutorial?.scaleMode = .aspectFill
+            view.presentScene(tutorial)
+        }
+        
+        water.selectedHandler = {
+            SKTransition.flipVertical(withDuration: 0)
+            
+            let tutorial = WoodTutorial1(fileNamed: "WoodTutorial1")
+            tutorial?.scaleMode = .aspectFill
+            view.presentScene(tutorial)
+        }
         
     }
     
