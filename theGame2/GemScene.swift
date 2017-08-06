@@ -95,17 +95,13 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
         opponentElement4 = childNode(withName: "opponentElement4") as! Element
         opponentElement5 = childNode(withName: "opponentElement5") as! Element
         
-        playerWoodLabel = childNode(withName: "//playerWoodLabel") as! SKLabelNode
-        playerFireLabel = childNode(withName: "//playerFireLabel") as! SKLabelNode
-        playerEarthLabel = childNode(withName: "//playerEarthLabel") as! SKLabelNode
-        playerMetalLabel = childNode(withName: "//playerMetalLabel") as! SKLabelNode
-        playerWaterLabel = childNode(withName: "//playerWaterLabel") as! SKLabelNode
+      
         
-        opponentWoodLabel = childNode(withName: "opponentWoodLabel") as! SKLabelNode
-        opponentFireLabel = childNode(withName: "opponentFireLabel") as! SKLabelNode
-        opponentEarthLabel = childNode(withName: "opponentEarthLabel") as! SKLabelNode
-        opponentMetalLabel = childNode(withName: "opponentMetalLabel") as! SKLabelNode
-        opponentWaterLabel = childNode(withName: "opponentWaterLabel") as! SKLabelNode
+        opponentWoodLabel = childNode(withName: "//opponentWoodLabel") as! SKLabelNode
+        opponentFireLabel = childNode(withName: "//opponentFireLabel") as! SKLabelNode
+        opponentEarthLabel = childNode(withName: "//opponentEarthLabel") as! SKLabelNode
+        opponentMetalLabel = childNode(withName: "//opponentMetalLabel") as! SKLabelNode
+        opponentWaterLabel = childNode(withName: "//opponentWaterLabel") as! SKLabelNode
         
         comboZone1 = childNode(withName: "//comboZone1") as! SKSpriteNode
         comboZone2 = childNode(withName: "//comboZone2") as! SKSpriteNode
@@ -405,13 +401,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
     }
     override func update(_ currentTime: TimeInterval) {
     
-        
-        playerWoodLabel.text = String(player.wood.health)
-        playerFireLabel.text = String(player.fire.health)
-        playerEarthLabel.text = String(player.earth.health)
-        playerMetalLabel.text = String(player.metal.health)
-        playerWaterLabel.text = String(player.water.health)
-        
+       
         opponentWoodLabel.text = String(opponent.wood.health)
         opponentFireLabel.text = String(opponent.fire.health)
         opponentEarthLabel.text = String(opponent.earth.health)

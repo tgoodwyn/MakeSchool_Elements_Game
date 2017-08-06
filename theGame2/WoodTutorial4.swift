@@ -16,7 +16,7 @@ class WoodTutorial4: SKScene, SKPhysicsContactDelegate {
     
     var startLabel: SKLabelNode!
     var turnCountLabel: SKLabelNode!
-    var turnsAllowed: Int = 2
+    var turnsAllowed: Int = 1
     
     var gamesCompleted: Int = 0
     var numberOfMovesOpponentTakes: Int = 0
@@ -112,9 +112,9 @@ class WoodTutorial4: SKScene, SKPhysicsContactDelegate {
             prevType = nextElement.type
         }
         
-        playerElement1.isHidden = true
         playerElement2.isHidden = true
-        
+        playerElement3.isHidden = true
+        playerElement4.isHidden = true
         
         prevType = nil
         for number in 1...5 {
@@ -144,12 +144,16 @@ class WoodTutorial4: SKScene, SKPhysicsContactDelegate {
         nextTutButton.isHidden = true
         
         nextTutButton.selectedHandler = {
+            SKTransition.flipHorizontal(withDuration: 0)
             
+            let next = WoodTutorial4(fileNamed: "WoodTutorial5")
+            next?.scaleMode = .aspectFill
+            view.presentScene(next)
             
         }
         restartButton.selectedHandler = {
             self.setBoard()
-            self.turnsAllowed = 2
+            self.turnsAllowed = 1
             self.startLabel.isHidden = true
             self.restartButton.isHidden = true
         }
@@ -159,16 +163,16 @@ class WoodTutorial4: SKScene, SKPhysicsContactDelegate {
     
     func setBoard() {
         player.wood.health = 0
-        player.fire.health = 2
-        player.earth.health = 3
-        player.metal.health = 1
-        player.water.health = 0
+        player.fire.health = 0
+        player.earth.health = 0
+        player.metal.health = 4
+        player.water.health = 4
         
         opponent.wood.health = 0
-        opponent.fire.health = 2
-        opponent.earth.health = 5
-        opponent.metal.health = 6
-        opponent.water.health = 0
+        opponent.fire.health = 0
+        opponent.earth.health = 0
+        opponent.metal.health = 4
+        opponent.water.health = 8
         
     }
     
@@ -333,9 +337,9 @@ class WoodTutorial4: SKScene, SKPhysicsContactDelegate {
         opponentMetalLabel.text = String(opponent.metal.health)
         opponentWaterLabel.text = String(opponent.water.health)
         
-        if turnsAllowed == 2 || turnsAllowed == 1 {
-            self.tutText1.text = ("See if you can figure this one")
-            self.tutText2.text = ("out")
+        if turnsAllowed == 1 {
+            self.tutText1.text = ("Now try this one")
+            self.tutText2.text = nil
         }
         
         
@@ -430,8 +434,8 @@ class WoodTutorial4: SKScene, SKPhysicsContactDelegate {
                 self.turnsAllowed = 0
                 print("OVER CONDITION 1")
                 
-                    self.tutText1.text = ("Good job! Transferring values")
-                    self.tutText2.text = ("between elements is essential")
+                    self.tutText1.text = ("You got it! The cycle of")
+                    self.tutText2.text = ("growth wraps around")
         
                 
             } else if self.turnsAllowed == 0 {
@@ -441,7 +445,7 @@ class WoodTutorial4: SKScene, SKPhysicsContactDelegate {
                 self.restartButton.isHidden = false
                 self.turnsAllowed = 0
                 print("OVER CONDITION 2")
-                self.tutText1.text = ("Hint: order matters")
+                self.tutText1.text = ("Hint: metal supports water")
                 self.tutText2.text = nil
             }
         }

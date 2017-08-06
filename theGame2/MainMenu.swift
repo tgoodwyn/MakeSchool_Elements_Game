@@ -19,12 +19,12 @@ class MainMenu: SKScene {
     var wood: SKSpriteNode!
     var water: SKSpriteNode!
     
-    
+    var tutorialButton: MSButtonNode!
     
     override func didMove(to view: SKView) {
         
         self.anchorPoint = CGPoint(x: 0, y: 0)
-        
+        tutorialButton = childNode(withName: "tutorialButton") as! MSButtonNode
         buttonNode = childNode(withName: "buttonNode") as! MSButtonNode
         fire = childNode(withName: "fire") as! SKSpriteNode
         earth = childNode(withName: "earth") as! SKSpriteNode
@@ -50,11 +50,20 @@ class MainMenu: SKScene {
             CGPoint(x: metal.position.x - distance * sin(18 * .pi / 180),
                     y: metal.position.y + distance * cos(18 * .pi / 180))
         
-        buttonNode.selectedHandler = {
+        tutorialButton.selectedHandler = {
             
             SKTransition.flipVertical(withDuration: 0)
             
             let tutorial = TutorialScene(fileNamed: "TutorialMenu")
+            tutorial?.scaleMode = .aspectFill
+            view.presentScene(tutorial)
+        }
+        
+        buttonNode.selectedHandler = {
+            
+            SKTransition.flipVertical(withDuration: 0)
+            
+            let tutorial = GemScene(fileNamed: "GemScene")
             tutorial?.scaleMode = .aspectFill
             view.presentScene(tutorial)
         }

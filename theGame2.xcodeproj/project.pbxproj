@@ -13,6 +13,11 @@
 		F70CED3E1F34E26200D471DA /* WoodTutorial3.sks in Resources */ = {isa = PBXBuildFile; fileRef = F70CED3D1F34E26200D471DA /* WoodTutorial3.sks */; };
 		F70CED401F34EF7800D471DA /* WoodTutorial4.sks in Resources */ = {isa = PBXBuildFile; fileRef = F70CED3F1F34EF7800D471DA /* WoodTutorial4.sks */; };
 		F70CED421F34EF8B00D471DA /* WoodTutorial4.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70CED411F34EF8B00D471DA /* WoodTutorial4.swift */; };
+		F70CED461F34F3E600D471DA /* WoodTutorial5.sks in Resources */ = {isa = PBXBuildFile; fileRef = F70CED451F34F3E600D471DA /* WoodTutorial5.sks */; };
+		F70CED481F35293600D471DA /* WoodTutorial6.sks in Resources */ = {isa = PBXBuildFile; fileRef = F70CED471F35293600D471DA /* WoodTutorial6.sks */; };
+		F70CED4A1F35294000D471DA /* WoodTutorial5.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70CED491F35294000D471DA /* WoodTutorial5.swift */; };
+		F70CED4C1F3529B400D471DA /* WoodTutorial7.sks in Resources */ = {isa = PBXBuildFile; fileRef = F70CED4B1F3529B400D471DA /* WoodTutorial7.sks */; };
+		F70CED4E1F3529DC00D471DA /* WoodTutorial6.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70CED4D1F3529DC00D471DA /* WoodTutorial6.swift */; };
 		F7415B931F29026F00F02643 /* ReferenceScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F7415B921F29026F00F02643 /* ReferenceScene.sks */; };
 		F7415B951F29032100F02643 /* ReferenceScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7415B941F29032100F02643 /* ReferenceScene.swift */; };
 		F7415B991F293E7300F02643 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F7415B981F293E7300F02643 /* Assets.xcassets */; };
@@ -47,6 +52,11 @@
 		F70CED3D1F34E26200D471DA /* WoodTutorial3.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = WoodTutorial3.sks; sourceTree = "<group>"; };
 		F70CED3F1F34EF7800D471DA /* WoodTutorial4.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = WoodTutorial4.sks; sourceTree = "<group>"; };
 		F70CED411F34EF8B00D471DA /* WoodTutorial4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WoodTutorial4.swift; sourceTree = "<group>"; };
+		F70CED451F34F3E600D471DA /* WoodTutorial5.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = WoodTutorial5.sks; sourceTree = "<group>"; };
+		F70CED471F35293600D471DA /* WoodTutorial6.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = WoodTutorial6.sks; sourceTree = "<group>"; };
+		F70CED491F35294000D471DA /* WoodTutorial5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WoodTutorial5.swift; sourceTree = "<group>"; };
+		F70CED4B1F3529B400D471DA /* WoodTutorial7.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = WoodTutorial7.sks; sourceTree = "<group>"; };
+		F70CED4D1F3529DC00D471DA /* WoodTutorial6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WoodTutorial6.swift; sourceTree = "<group>"; };
 		F7415B921F29026F00F02643 /* ReferenceScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ReferenceScene.sks; sourceTree = "<group>"; };
 		F7415B941F29032100F02643 /* ReferenceScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferenceScene.swift; sourceTree = "<group>"; };
 		F7415B981F293E7300F02643 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -113,9 +123,12 @@
 				F7B01D381F33A6C200134DD8 /* earth tutorial */,
 				F7B01D371F33A6BC00134DD8 /* fire tutorial */,
 				F7B01D361F33A6B000134DD8 /* wood tutorial */,
+				F70CED3D1F34E26200D471DA /* WoodTutorial3.sks */,
+				F70CED391F34E22F00D471DA /* WoodTutorial3.swift */,
+				F703DFB91F33CD9E00B8A03A /* WoodTutorial2.sks */,
+				F703DFB51F33CD6D00B8A03A /* WoodTutorial2.swift */,
 				F7B01D3B1F33AB4C00134DD8 /* WoodTutorial1.sks */,
 				F7B01D3D1F33ABA400134DD8 /* WoodTutorial1.swift */,
-				F703DFB91F33CD9E00B8A03A /* WoodTutorial2.sks */,
 				F7415B941F29032100F02643 /* ReferenceScene.swift */,
 				F750FD1B1F1D7ADC0016FE81 /* MSButtonNode.swift */,
 				F750FCFF1F1D7A700016FE81 /* Actions.sks */,
@@ -153,11 +166,13 @@
 		F7B01D361F33A6B000134DD8 /* wood tutorial */ = {
 			isa = PBXGroup;
 			children = (
+				F70CED4B1F3529B400D471DA /* WoodTutorial7.sks */,
+				F70CED471F35293600D471DA /* WoodTutorial6.sks */,
+				F70CED4D1F3529DC00D471DA /* WoodTutorial6.swift */,
+				F70CED451F34F3E600D471DA /* WoodTutorial5.sks */,
+				F70CED491F35294000D471DA /* WoodTutorial5.swift */,
 				F70CED411F34EF8B00D471DA /* WoodTutorial4.swift */,
 				F70CED3F1F34EF7800D471DA /* WoodTutorial4.sks */,
-				F70CED3D1F34E26200D471DA /* WoodTutorial3.sks */,
-				F70CED391F34E22F00D471DA /* WoodTutorial3.swift */,
-				F703DFB51F33CD6D00B8A03A /* WoodTutorial2.swift */,
 			);
 			name = "wood tutorial";
 			sourceTree = "<group>";
@@ -251,17 +266,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				F77FCBAA1F1FE0FF002984B6 /* GUIScene.sks in Resources */,
+				F70CED461F34F3E600D471DA /* WoodTutorial5.sks in Resources */,
 				F79DDB031F2FDA2C00DB5162 /* MainMenu.sks in Resources */,
 				F703DFBA1F33CD9E00B8A03A /* WoodTutorial2.sks in Resources */,
 				F7415B991F293E7300F02643 /* Assets.xcassets in Resources */,
 				F7B01D331F33A10700134DD8 /* TutorialMenu.sks in Resources */,
 				F70CED3E1F34E26200D471DA /* WoodTutorial3.sks in Resources */,
+				F70CED4C1F3529B400D471DA /* WoodTutorial7.sks in Resources */,
 				F7B01D2F1F339B7E00134DD8 /* LoadingScene.sks in Resources */,
 				F7415B931F29026F00F02643 /* ReferenceScene.sks in Resources */,
 				F7B01D3C1F33AB4C00134DD8 /* WoodTutorial1.sks in Resources */,
 				F70CED401F34EF7800D471DA /* WoodTutorial4.sks in Resources */,
 				F79DDAFD1F2FA55D00DB5162 /* ComboScene.sks in Resources */,
 				F750FD071F1D7A700016FE81 /* Main.storyboard in Resources */,
+				F70CED481F35293600D471DA /* WoodTutorial6.sks in Resources */,
 				F750FD0C1F1D7A700016FE81 /* LaunchScreen.storyboard in Resources */,
 				F79DDAFB1F2F978B00DB5162 /* GemScene.sks in Resources */,
 				F750FD001F1D7A700016FE81 /* Actions.sks in Resources */,
@@ -281,6 +299,7 @@
 				F750FD041F1D7A700016FE81 /* GameViewController.swift in Sources */,
 				F750FD1C1F1D7ADC0016FE81 /* MSButtonNode.swift in Sources */,
 				F7415BE31F2A605700F02643 /* OpeningScene.swift in Sources */,
+				F70CED4A1F35294000D471DA /* WoodTutorial5.swift in Sources */,
 				F7415B951F29032100F02643 /* ReferenceScene.swift in Sources */,
 				F7B01D3E1F33ABA400134DD8 /* WoodTutorial1.swift in Sources */,
 				F77FCBA81F1FE0D3002984B6 /* GUIScene.swift in Sources */,
@@ -288,6 +307,7 @@
 				F750FCFC1F1D7A700016FE81 /* AppDelegate.swift in Sources */,
 				F750FD1A1F1D7AD50016FE81 /* Element.swift in Sources */,
 				F70CED3A1F34E23000D471DA /* WoodTutorial3.swift in Sources */,
+				F70CED4E1F3529DC00D471DA /* WoodTutorial6.swift in Sources */,
 				F79DDB011F2FCFF100DB5162 /* Gem.swift in Sources */,
 				F70CED421F34EF8B00D471DA /* WoodTutorial4.swift in Sources */,
 				F7B01D401F33BB7A00134DD8 /* GemScene.swift in Sources */,

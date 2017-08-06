@@ -11,6 +11,13 @@ import SpriteKit
 
 class WoodTutorial3: SKScene, SKPhysicsContactDelegate {
     
+    enum gameState {
+        case active, inactive
+    }
+    var gameState: gameState = .inactive
+    var startRunning: Bool = false
+    var startButton: MSButtonNode!
+    
     var player = Player()
     var opponent = Player()
     
@@ -65,8 +72,16 @@ class WoodTutorial3: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
        
         startLabel = childNode(withName: "startLabel") as! SKLabelNode
-        startLabel.text = "Start"
-        startLabel.isHidden = true
+        startLabel.text = "Tap"
+        startLabel.isHidden = false
+        startButton = childNode(withName: "startButton") as! MSButtonNode
+        
+        startButton.selectedHandler = {
+            self.startLabel.isHidden = true
+            self.startButton.isHidden = true
+            self.startRunning = true
+            self.gameState = .active
+        }
         
         // element node connections and locations
         playerElement1 = childNode(withName: "playerElement1") as! Element
@@ -146,7 +161,7 @@ class WoodTutorial3: SKScene, SKPhysicsContactDelegate {
         nextTutButton.selectedHandler = {
             SKTransition.flipHorizontal(withDuration: 0)
             
-            let next = WoodTutorial3(fileNamed: "WoodTutorial4")
+            let next = WoodTutorial4(fileNamed: "WoodTutorial4")
             next?.scaleMode = .aspectFill
             view.presentScene(next)
             
@@ -231,6 +246,7 @@ class WoodTutorial3: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if self.gameState == .active {
         objectMovable = true
         let touch = touches.first!
         let location = touch.location(in: self)
@@ -241,6 +257,7 @@ class WoodTutorial3: SKScene, SKPhysicsContactDelegate {
             objectGrabbed = atPoint(location).parent as? Element
         } else {
             objectGrabbed = nil
+        }
         }
     }
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -275,6 +292,10 @@ class WoodTutorial3: SKScene, SKPhysicsContactDelegate {
                     self.isUserInteractionEnabled = true
                 }
                 if object1Locked && object2Locked {
+                    
+                    if (e1.type == .earth && e2.type == .fire) || (e2.type == .earth && e1.type == .fire) {
+                    self.startRunning = true
+                    }
                     if Element.strengthens[e1.type] == e2.type {
                         animateElement(e2.type)
                         animateHealth(e1: e2, e2: e1, add: true)
@@ -337,9 +358,89 @@ class WoodTutorial3: SKScene, SKPhysicsContactDelegate {
         opponentMetalLabel.text = String(opponent.metal.health)
         opponentWaterLabel.text = String(opponent.water.health)
         
-        if turnsAllowed == 2 || turnsAllowed == 1 {
-            self.tutText1.text = ("See if you can figure this one")
-            self.tutText2.text = ("out")
+        if turnsAllowed == 2 && startRunning {
+            self.startRunning = false
+            let delay = SKAction.wait(forDuration: 2.25)
+            let delay2 = SKAction.wait(forDuration: 3.0)
+            let anAction = SKAction.run {
+                self.isUserInteractionEnabled = false
+                self.tutText1.text = ("Using your new knowledge")
+                self.tutText2.text = nil
+            }
+            let anAction2 = SKAction.run {
+                self.tutText1.text = ("of the powers of growth")
+                self.tutText2.text = nil
+            }
+            let anAction3 = SKAction.run {
+                self.tutText1.text = ("Can you complete this recipe")
+                self.tutText2.text = nil
+            }
+            let anAction4 = SKAction.run {
+                self.tutText1.text = ("By growing earth with fire")
+                self.tutText2.text = ("And metal with earth?")
+                self.isUserInteractionEnabled = true
+            }
+       
+            
+            let seq = SKAction.sequence([anAction, delay, anAction2, delay, anAction3, delay, anAction4])
+            tutText1.run(seq)
+        } else if turnsAllowed == 1 && player.earth.health == 5 && startRunning {
+            self.startRunning = false
+            let delay = SKAction.wait(forDuration: 2.25)
+            let delay2 = SKAction.wait(forDuration: 3.0)
+            let anAction = SKAction.run {
+                self.isUserInteractionEnabled = false
+                self.tutText1.text = ("good start!!")
+                self.tutText2.text = nil
+            }
+            let anAction2 = SKAction.run {
+                self.tutText1.text = ("Now, though")
+                self.tutText2.text = nil
+                print("action2 being run")
+            }
+            let anAction3 = SKAction.run {
+                self.tutText1.text = ("Its essential that we")
+                self.tutText2.text = ("introduce another consideration")
+            }
+            let anAction4 = SKAction.run {
+                self.tutText1.text = ("As a powerful geomancer")
+                self.tutText2.text = nil
+            }
+            let anAction5 = SKAction.run {
+                self.tutText1.text = ("You are expected to be timely")
+                self.tutText2.text = ("in the fulfillment of your requests")
+            }
+            let anAction7 = SKAction.run {
+                self.tutText1.text = ("As I'm sure you've noticed...")
+                self.tutText2.text = ("There is a counter on the left")
+            }
+            let anAction8 = SKAction.run {
+                self.tutText1.text = ("Each order you are given will")
+                self.tutText2.text = ("come with a set amount of moves")
+            }
+            let anAction9 = SKAction.run {
+                self.tutText1.text = ("The order must be completed")
+                self.tutText2.text = ("in this exact amount of moves")
+            }
+            let anAction10 = SKAction.run {
+                self.tutText1.text = ("No more")
+                self.tutText2.text = nil
+            }
+            let anAction11 = SKAction.run {
+                self.tutText1.text = ("And no less")
+                self.tutText2.text = nil
+            }
+            let anAction12 = SKAction.run {
+                self.tutText1.text = ("Knowing this...")
+                self.tutText2.text = nil
+            }
+            let anAction13 = SKAction.run {
+                self.tutText1.text = ("Pick your next action")
+                self.tutText2.text = ("carefully")
+                self.isUserInteractionEnabled = true
+            }
+            let seq = SKAction.sequence([anAction, delay, anAction2, delay2, anAction3, delay, anAction7, delay2, anAction4, delay, anAction5, delay, anAction8, delay, anAction9, delay, anAction10, delay, anAction11, delay, anAction12, delay, anAction13])
+            tutText1.run(seq)
         }
         
         
@@ -434,8 +535,8 @@ class WoodTutorial3: SKScene, SKPhysicsContactDelegate {
                 self.turnsAllowed = 0
                 print("OVER CONDITION 1")
                 
-                    self.tutText1.text = ("Good job! Transferring values")
-                    self.tutText2.text = ("between elements is essential")
+                    self.tutText1.text = ("Excellent! You are one step closer")
+                    self.tutText2.text = ("to becoming an elemental master")
         
                 
             } else if self.turnsAllowed == 0 {
