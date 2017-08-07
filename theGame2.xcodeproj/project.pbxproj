@@ -18,6 +18,7 @@
 		F70CED4A1F35294000D471DA /* WoodTutorial5.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70CED491F35294000D471DA /* WoodTutorial5.swift */; };
 		F70CED4C1F3529B400D471DA /* WoodTutorial7.sks in Resources */ = {isa = PBXBuildFile; fileRef = F70CED4B1F3529B400D471DA /* WoodTutorial7.sks */; };
 		F70CED4E1F3529DC00D471DA /* WoodTutorial6.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70CED4D1F3529DC00D471DA /* WoodTutorial6.swift */; };
+		F70CED501F38DCAB00D471DA /* ElementChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70CED4F1F38DCAA00D471DA /* ElementChange.swift */; };
 		F7415B931F29026F00F02643 /* ReferenceScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F7415B921F29026F00F02643 /* ReferenceScene.sks */; };
 		F7415B951F29032100F02643 /* ReferenceScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7415B941F29032100F02643 /* ReferenceScene.swift */; };
 		F7415B991F293E7300F02643 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F7415B981F293E7300F02643 /* Assets.xcassets */; };
@@ -57,6 +58,7 @@
 		F70CED491F35294000D471DA /* WoodTutorial5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WoodTutorial5.swift; sourceTree = "<group>"; };
 		F70CED4B1F3529B400D471DA /* WoodTutorial7.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = WoodTutorial7.sks; sourceTree = "<group>"; };
 		F70CED4D1F3529DC00D471DA /* WoodTutorial6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WoodTutorial6.swift; sourceTree = "<group>"; };
+		F70CED4F1F38DCAA00D471DA /* ElementChange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ElementChange.swift; path = ../ElementChange.swift; sourceTree = "<group>"; };
 		F7415B921F29026F00F02643 /* ReferenceScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ReferenceScene.sks; sourceTree = "<group>"; };
 		F7415B941F29032100F02643 /* ReferenceScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferenceScene.swift; sourceTree = "<group>"; };
 		F7415B981F293E7300F02643 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 		F750FCFA1F1D7A700016FE81 /* theGame2 */ = {
 			isa = PBXGroup;
 			children = (
+				F70CED4F1F38DCAA00D471DA /* ElementChange.swift */,
 				F703DFB41F33C63500B8A03A /* not using */,
 			);
 			path = theGame2;
@@ -294,6 +297,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F79DDB051F2FE03000DB5162 /* MainMenu.swift in Sources */,
+				F70CED501F38DCAB00D471DA /* ElementChange.swift in Sources */,
 				F750FD181F1D7ACD0016FE81 /* Player.swift in Sources */,
 				F7B01D351F33A13E00134DD8 /* TutorialMenu.swift in Sources */,
 				F750FD041F1D7A700016FE81 /* GameViewController.swift in Sources */,
