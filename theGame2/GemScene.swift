@@ -165,19 +165,41 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
             self.run(seq)
             self.gameState = .active
             self.startLabel.text = "Hint"
+            self.startLabel.fontColor = .black
             self.setBoardButton.isHidden = true
             self.hintButton.isHidden = false
             self.timeRemaining = 60
+            self.gameMode = .untimed
+            self.background1.isHidden = false
+            self.background2.isHidden = true
+            self.turnCountLabel.isHidden = false
+            self.turnsAllowedLabel.isHidden = false
+            self.movesLabel.isHidden = false
+            self.ofLabel.isHidden = false
+            self.timeLabel.isHidden = true
+            self.timeCount.isHidden = true
             
         }
         restartButton.selectedHandler = {
             self.resetBoard()
             self.setaiBoard()
             self.gameState = .active
-            self.startLabel.isHidden = true
+            self.gameMode = .untimed
+            self.background1.isHidden = false
+            self.background2.isHidden = true
+            self.startLabel.isHidden = false
+            self.startLabel.text = "Hint"
+            self.startLabel.fontColor = .black
             self.restartButton.isHidden = true
             self.hintButton.isHidden = false
             self.timeRemaining = 60
+            self.undoButton.isHidden = true
+            self.turnCountLabel.isHidden = false
+            self.turnsAllowedLabel.isHidden = false
+            self.movesLabel.isHidden = false
+            self.ofLabel.isHidden = false
+            self.timeLabel.isHidden = true
+            self.timeCount.isHidden = true
         }
         
         
@@ -627,6 +649,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
          
          }*/
         
+        if self.gameState == .active {
         if self.gameMode == .untimed {
             
             
@@ -662,9 +685,11 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
             if self.player.wood.health == self.ai.wood.health && self.player.fire.health == self.ai.fire.health && self.player.earth.health == self.ai.earth.health && self.player.metal.health == self.ai.metal.health && self.player.water.health == self.ai.water.health {
                 self.startLabel.isHidden = false
                 self.startLabel.text = "Success"
-                self.hintButton.isHidden = true
-                self.gamesCompleted += 1
                 self.setBoardButton.isHidden = false
+                self.startLabel.fontColor = .white
+                self.setBoardButton.color = .white
+                self.gamesCompleted += 1
+                self.gameMode = .untimed
                 self.gameState = .inactive
                 self.turnsAllowed = 0
                 self.aiActions = []
@@ -675,6 +700,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                 self.undoButton.isHidden = true
             }
             else if timeRemaining <= 0 {
+                self.timeRemaining = 0
                 self.gamesCompleted = 0
                 self.startLabel.isHidden = false
                 self.startLabel.text = "Restart"
@@ -687,9 +713,13 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                 self.hintElements = []
                 self.emptyArrays()
                 self.movesTaken = 0
-                self.gameMode = .untimed
                 self.undoButton.isHidden = true
+                for element in [playerElement1, playerElement2, playerElement3, playerElement4, playerElement5] {
+                        element!.position = element!.startingPosition
+                }
+                
             }
+        }
         }
         
         // label updates
@@ -783,18 +813,6 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                     self.emptyArrays()
                     self.movesTaken = 0
                     self.timeRemaining = 60
-                } else if self.turnsAllowed == 0 {
-                    self.gamesCompleted = 0
-                    self.startLabel.isHidden = false
-                    self.startLabel.text = "Fail"
-                    self.hintButton.isHidden = true
-                    self.restartButton.isHidden = false
-                    self.turnsAllowed = 0
-                    self.gameState = .inactive
-                    self.aiActions = []
-                    self.hintElements = []
-                    self.emptyArrays()
-                    self.movesTaken = 0
                 }
             }
         }
