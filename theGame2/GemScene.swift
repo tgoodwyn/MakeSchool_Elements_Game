@@ -56,6 +56,15 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
     var startLabel: SKLabelNode!
     var turnCountLabel: SKLabelNode!
     var turnsAllowedLabel: SKLabelNode!
+    var movesLabel: SKLabelNode!
+    var ofLabel: SKLabelNode!
+    var timeLabel: SKLabelNode!
+    var timeCount: SKLabelNode!
+    var timeRemaining: Double = 0 {
+        didSet {
+            timeCount.text = String(Int(timeRemaining))
+        }
+    }
     var turnsAllowed: Int = 0 {
         didSet {
             turnsAllowedLabel.text = String(turnsAllowed)
@@ -113,15 +122,22 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
         restartButton = childNode(withName: "restartButton") as! MSButtonNode
         turnCountLabel = childNode(withName: "turnCountLabel") as! SKLabelNode
         turnsAllowedLabel = childNode(withName: "turnAllowedLabel") as! SKLabelNode
+        movesLabel = childNode(withName: "movesLabel") as! SKLabelNode
+        ofLabel = childNode(withName: "ofLabel") as! SKLabelNode
+        timeLabel = childNode(withName: "timeLabel") as! SKLabelNode
+        timeCount = childNode(withName: "timeCount") as! SKLabelNode
         restartButton.isHidden = true
         background1 = childNode(withName: "background1") as! SKSpriteNode
         background2 = childNode(withName: "background2") as! SKSpriteNode
         background1.isHidden = false
         background2.isHidden = true
+        timeLabel.isHidden = true
+        timeCount.isHidden = true
         // Button functions
         undoButton.selectedHandler = {
             self.gameMode = .untimed
             self.background1.isHidden = false
+            self.background2.isHidden = true
             self.movesTaken = self.lastUntimedMove
             self.player.fire.health = self.playerFireHealths[self.movesTaken]
             self.player.wood.health = self.playerWoodHealths[self.movesTaken]
@@ -131,6 +147,12 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
             self.undoButton.isHidden = true
             self.hintButton.isHidden = false
             self.startLabel.isHidden = false
+            self.turnCountLabel.isHidden = false
+            self.turnsAllowedLabel.isHidden = false
+            self.movesLabel.isHidden = false
+            self.ofLabel.isHidden = false
+            self.timeLabel.isHidden = true
+            self.timeCount.isHidden = true
         }
         hintButton.selectedHandler = {
             self.setHintElement()
@@ -145,6 +167,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
             self.startLabel.text = "Hint"
             self.setBoardButton.isHidden = true
             self.hintButton.isHidden = false
+            self.timeRemaining = 60
             
         }
         restartButton.selectedHandler = {
@@ -154,6 +177,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
             self.startLabel.isHidden = true
             self.restartButton.isHidden = true
             self.hintButton.isHidden = false
+            self.timeRemaining = 60
         }
         
         
@@ -270,7 +294,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
         print(aiAction)
         aiActions.append(aiAction)
         print(aiActions)
-        let setPlayerElement : [Element.element : Element] = [.earth: player.earth, .metal: player.metal, .water: player.water, .wood: player.wood, .fire: player.fire]
+        let setPlayerElement : [Element.element : Element] = [.earth: player.fire, .metal: player.earth, .water: player.metal, .wood: player.water, .fire: player.wood]
         let playerElement = setPlayerElement[selectedElement.type]
         hintElements.append(playerElement!)
         let change = ElementChange(position: selectedElement.position, text: "+")
@@ -285,7 +309,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
         print(aiAction)
         aiActions.append(aiAction)
         print(aiActions)
-        let setPlayerElement : [Element.element : Element] = [.earth: player.earth, .metal: player.metal, .water: player.water, .wood: player.wood, .fire: player.fire]
+        let setPlayerElement : [Element.element : Element] = [.earth: player.wood, .metal: player.fire, .water: player.earth, .wood: player.metal, .fire: player.water]
         let playerElement = setPlayerElement[selectedElement.type]
         hintElements.append(playerElement!)
         let change = ElementChange(position: selectedElement.position, text: "-")
@@ -340,7 +364,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
             let move = SKAction.run {
                 self.aiTurn()
             }
-            let delay = SKAction.wait(forDuration: TimeInterval(2*x))
+            let delay = SKAction.wait(forDuration: TimeInterval(1.3*Double(x)))
             var seqArray = [delay, move]
             if x == numberOfMovesaiTakes-1 {
                 seqArray.append(reenableInteraction)
@@ -453,7 +477,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                 if self.gameState == .active {
                     if object1Locked && object2Locked {
                         if Element.strengthens[e1.type] == e2.type {
-                            let change = ElementChange(position: e2.position, text: "+")
+                            let change = ElementChange(position: effect.position, text: "+")
                             animateElement(e2.type, object: effect, label: change)
                             animateHealth(e1: e2, e2: e1, add: true)
                             playerAction = "\(e2.type.rawValue)Strengthened"
@@ -464,7 +488,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                                 appendArrays()
                             }
                         } else if Element.strengthens[e2.type] == e1.type {
-                            let change = ElementChange(position: e1.position, text: "+")
+                            let change = ElementChange(position: effect.position, text: "+")
                             animateElement(e1.type, object: effect, label: change)
                             animateHealth(e1: e1, e2: e2, add: true)
                             playerAction = "\(e1.type.rawValue)Strengthened"
@@ -477,7 +501,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                             
                         } else if Element.damagedBy[e1.type] == e2.type {
                             
-                            let change = ElementChange(position: e1.position, text: "-")
+                            let change = ElementChange(position: effect.position, text: "-")
                             animateElement(e1.type, object: effect, label: change)
                             animateHealth(e1: e1, e2: e2, add: false)
                             print(e1.type.rawValue)
@@ -491,7 +515,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                             }
                         } else if Element.damagedBy[e2.type] == e1.type {
                             
-                            let change = ElementChange(position: e2.position, text: "-")
+                            let change = ElementChange(position: effect.position, text: "-")
                             animateElement(e2.type, object: effect, label: change)
                             animateHealth(e1: e2, e2: e1, add: false)
                             print(e1.type.rawValue)
@@ -518,7 +542,12 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                                     self.undoButton.isHidden = false
                                     self.startLabel.isHidden = true
                                     self.gameMode = .timed
-                                    
+                                    self.turnCountLabel.isHidden = true
+                                    self.turnsAllowedLabel.isHidden = true
+                                    self.movesLabel.isHidden = true
+                                    self.ofLabel.isHidden = true
+                                    self.timeLabel.isHidden = false
+                                    self.timeCount.isHidden = false
                                 }
                             }
                         }
@@ -599,6 +628,9 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
          }*/
         
         if self.gameMode == .untimed {
+            
+            
+            
             for (opponent, player) in [ai.wood : player.wood, ai.fire : player.fire, ai.earth : player.earth, ai.metal : player.metal, ai.water : player.water] {
                 if let player = player {
                     let labels: [Element.element : SKLabelNode] = [.wood : aiWoodLabel, .fire : aiFireLabel, .earth : aiEarthLabel, .metal : aiMetalLabel, .water : aiWaterLabel]
@@ -610,6 +642,53 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                         }
                     }
                 }
+            }
+        } else if self.gameMode == .timed {
+            
+            timeRemaining -= 0.05
+            
+            for (opponent, player) in [ai.wood : player.wood, ai.fire : player.fire, ai.earth : player.earth, ai.metal : player.metal, ai.water : player.water] {
+                if let player = player {
+                    let labels: [Element.element : SKLabelNode] = [.wood : aiWoodLabel, .fire : aiFireLabel, .earth : aiEarthLabel, .metal : aiMetalLabel, .water : aiWaterLabel]
+                    if let label = labels[opponent.type] {
+                        if opponent.health == player.health {
+                            label.fontColor = .white
+                        } else {
+                            label.fontColor = .black
+                        }
+                    }
+                }
+            }
+            if self.player.wood.health == self.ai.wood.health && self.player.fire.health == self.ai.fire.health && self.player.earth.health == self.ai.earth.health && self.player.metal.health == self.ai.metal.health && self.player.water.health == self.ai.water.health {
+                self.startLabel.isHidden = false
+                self.startLabel.text = "Success"
+                self.hintButton.isHidden = true
+                self.gamesCompleted += 1
+                self.setBoardButton.isHidden = false
+                self.gameState = .inactive
+                self.turnsAllowed = 0
+                self.aiActions = []
+                self.hintElements = []
+                self.emptyArrays()
+                self.movesTaken = 0
+                self.timeRemaining = 60
+                self.undoButton.isHidden = true
+            }
+            else if timeRemaining <= 0 {
+                self.gamesCompleted = 0
+                self.startLabel.isHidden = false
+                self.startLabel.text = "Restart"
+                startLabel.fontColor = .white
+                self.hintButton.isHidden = true
+                self.restartButton.isHidden = false
+                self.turnsAllowed = 0
+                self.gameState = .inactive
+                self.aiActions = []
+                self.hintElements = []
+                self.emptyArrays()
+                self.movesTaken = 0
+                self.gameMode = .untimed
+                self.undoButton.isHidden = true
             }
         }
         
@@ -676,7 +755,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(label)
         label.fontName = String(describing: UIFont.boldSystemFont(ofSize: 48))
         objectToAnimate.run(seq)
-        label.run(SKAction.sequence([SKAction.unhide(),SKAction.wait(forDuration: 1),/*SKAction.removeFromParent()*/]))
+        //label.run(SKAction.sequence([SKAction.unhide(),SKAction.wait(forDuration: 1),SKAction.removeFromParent()]))
     }
     
     func animateHealth(e1: Element, e2: Element, add: Bool) {
@@ -703,6 +782,7 @@ class GemScene: SKScene, SKPhysicsContactDelegate {
                     self.hintElements = []
                     self.emptyArrays()
                     self.movesTaken = 0
+                    self.timeRemaining = 60
                 } else if self.turnsAllowed == 0 {
                     self.gamesCompleted = 0
                     self.startLabel.isHidden = false
